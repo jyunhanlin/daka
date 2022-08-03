@@ -3,8 +3,8 @@ require('cross-fetch/polyfill');
 const cherrio = require('cheerio');
 const { format, startOfMonth, endOfMonth, eachDayOfInterval, subMinutes } = require('date-fns');
 
-const USER_NAME = process.env.USER_NAME;
-const USER_PASSWORD = process.env.USER_PASSWORD;
+const USER_NAME = process.env.FEMAS_USERNAME;
+const USER_PASSWORD = process.env.FEMAS_PASSWORD;
 const DELAY_MIN_MINUTE = process.env.DELAY_MIN_MINUTE || 1;
 const DELAY_MAX_MINUTE = process.env.DELAY_MAX_MINUTE || 15;
 
