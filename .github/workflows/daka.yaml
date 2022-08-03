@@ -1,0 +1,31 @@
+name: Daka
+
+on:
+  schedule:
+    - cron: '0 11/2 * * *'
+
+jobs:
+  daka:
+    environment: cron
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Let's Daka
+        run: node daka.js
+        env:
+          USER_NAME: ${{ secrets.USER_NAME }}
+          USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
+          DELAY_MIN_MINUTE: ${{ secrets.DELAY_MIN_MINUTE }}
+          DELAY_MAX_MINUTE: ${{ secrets.DELAY_MAX_MINUTE }}
