@@ -27,5 +27,5 @@ jobs:
         env:
           FEMAS_USERNAME: ${{ secrets.FEMAS_USERNAME }}
           FEMAS_PASSWORD: ${{ secrets.FEMAS_PASSWORD }}
-          DELAY_MIN_MINUTE: ${{ secrets.DELAY_MIN_MINUTE }}
-          DELAY_MAX_MINUTE: ${{ secrets.DELAY_MAX_MINUTE }}
+          DELAY_MIN_MINS: ${{ secrets.DELAY_MIN_MINS }}
+          DELAY_MAX_MINS: ${{ secrets.DELAY_MAX_MINS }}

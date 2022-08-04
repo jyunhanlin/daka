@@ -10,7 +10,7 @@ $ npm install
 
 1. Copy `example.env` to `.env`
 2. Enter your username and password
-3. Change the DELAY_MIN_MINUTE or DELAY_MAX_MINUTE if you want to change the delay time
+3. Change the DELAY_MIN_MINS or DELAY_MAX_MINS if you want to change the delay time
 
 ### Crontab
 
@@ -36,5 +36,5 @@ on:
 - Add secrets to Github Actions
   - FEMAS_USERNAME: your username for FEMAS
   - FEMAS_PASSWORD: your password for FEMAS
-  - DELAY_MIN_MINUTE: the minimum delay time (default: 1) (optional)
-  - DELAY_MAX_MINUTE: the maximum delay time (default: 15) (optional)
+  - DELAY_MIN_MINS: the minimum delay minutes (default: 1) (optional)
+  - DELAY_MAX_MINS: the maximum delay minutes (default: 15) (optional)

@@ -5,8 +5,8 @@ const { format, startOfMonth, endOfMonth, eachDayOfInterval, subMinutes } = requ
 
 const USER_NAME = process.env.FEMAS_USERNAME;
 const USER_PASSWORD = process.env.FEMAS_PASSWORD;
-const DELAY_MIN_MINUTE = process.env.DELAY_MIN_MINUTE || 1;
-const DELAY_MAX_MINUTE = process.env.DELAY_MAX_MINUTE || 15;
+const DELAY_MIN_MINS = process.env.DELAY_MIN_MINS || 1;
+const DELAY_MAX_MINS = process.env.DELAY_MAX_MINS || 15;
 
 const MAGIC_NUMBER = 5;
 
@@ -177,11 +177,11 @@ const getRandomMinute = (min, max) => {
   return Math.floor(Math.random() * (maxMinute - minMinute + 1)) + minMinute;
 };
 
-const randomMinute = getRandomMinute(DELAY_MIN_MINUTE, DELAY_MAX_MINUTE);
+const randomMinute = getRandomMinute(DELAY_MIN_MINS, DELAY_MAX_MINS);
 
 const delay =
   HOUR_WITH_TIMEZONE >= 12
-    ? Math.max(randomMinute, (DELAY_MAX_MINUTE / MAGIC_NUMBER) * 60)
+    ? Math.max(randomMinute, (DELAY_MAX_MINS / MAGIC_NUMBER) * 60)
     : randomMinute / MAGIC_NUMBER;
 
 console.log(`daka delay ${delay / 60} mins`);
