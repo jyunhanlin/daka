@@ -40,10 +40,16 @@ const login = async () => {
 
   const html = await postLoginResponse.text();
 
+  if (html.includes('密碼錯誤')) {
+    throw new Error('user/password error');
+  }
+
   const $ = cherrio.load(html);
 
   const ClockRecordUserId = $('#ClockRecordUserId').val();
   const AttRecordUserId = $('#AttRecordUserId').val();
+
+  console.log('login success');
 
   return { session, ClockRecordUserId, AttRecordUserId };
 };
@@ -63,7 +69,7 @@ const daka = async ({ session, ClockRecordUserId, AttRecordUserId }) => {
   dakaData.append('data[ClockRecord][latitude]', '');
   dakaData.append('data[ClockRecord][longitude]', '');
 
-  await fetch('https://femascloud.com/swag/users/clock_listing', {
+  const dakaResponse = await fetch('https://femascloud.com/swag/users/clock_listing', {
     headers: {
       'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
       'x-requested-with': 'XMLHttpRequest',
@@ -74,6 +80,22 @@ const daka = async ({ session, ClockRecordUserId, AttRecordUserId }) => {
     body: dakaData,
     method: 'POST',
   });
+
+  const html = await dakaResponse.text();
+
+  const $ = cherrio.load(html);
+
+  const dakaRecords = $('.textBlue');
+
+  let dakaTime;
+  if (clockType !== 'E') dakaTime = dakaRecords.eq(0).text().trim();
+  else dakaTime = dakaRecords.eq(1).text().trim();
+
+  if (!dakaTime) {
+    throw new Error('daka error');
+  }
+
+  console.log(`daka success, time: ${dakaTime}`);
 };
 
 const checkDakaDay = async ({ session }) => {
@@ -135,12 +157,16 @@ const checkDakaDay = async ({ session }) => {
 
 const main = async () => {
   console.log('===== start =====');
-  const { session, ClockRecordUserId, AttRecordUserId } = await login();
+  try {
+    const { session, ClockRecordUserId, AttRecordUserId } = await login();
 
-  const isDakaDay = await checkDakaDay({ session });
+    const isDakaDay = await checkDakaDay({ session });
 
-  if (isDakaDay) {
-    await daka({ session, ClockRecordUserId, AttRecordUserId });
+    if (isDakaDay) {
+      await daka({ session, ClockRecordUserId, AttRecordUserId });
+    }
+  } catch (e) {
+    console.error(e);
   }
   console.log('===== end =====');
 };
