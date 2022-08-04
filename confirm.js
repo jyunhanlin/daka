@@ -4,8 +4,8 @@ const TODAY = new Date();
 const timezoneOffset = TODAY.getTimezoneOffset() !== 0 ? TODAY.getTimezoneOffset() : -480;
 const TODAY_WITH_TIMEZONE = subMinutes(TODAY, timezoneOffset);
 
-const hours = TODAY.getHours();
-const hours2 = TODAY_WITH_TIMEZONE.getHours();
+const hours = TODAY.getUTCHours();
+const hours2 = TODAY_WITH_TIMEZONE.getUTCHours();
 
 const startDayOfMonth = format(startOfMonth(TODAY_WITH_TIMEZONE), 'yyyy-MM-dd');
 const lastDayOfMonth = format(endOfMonth(TODAY_WITH_TIMEZONE), 'yyyy-MM-dd');
