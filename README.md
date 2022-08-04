@@ -19,10 +19,10 @@ $ crontab -e
 ```
 
 ```bash
-0 10,19 * * * cd DAKA_FOLDER/daka &&  /NODE_PATH/node daka.js >>daka.log 2>&1
+0 10,19 * * * /NODE_PATH/node daka.js >>daka.log 2>&1
 ```
 
-### or use Github Actions
+### or use Github Actions(Under testing)
 
 - Change the cron you want (Github Actions use UTC time)
 
