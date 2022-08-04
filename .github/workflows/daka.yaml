@@ -2,11 +2,11 @@ name: Daka
 
 on:
   schedule:
-    - cron: '0 11,2 * * *'
+    - cron: '30 1 * * *'
+    - cron: '0 11 * * *'
 
 jobs:
   daka:
-    environment: cron
     runs-on: ubuntu-latest
 
     steps:
