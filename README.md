@@ -22,7 +22,9 @@ $ crontab -e
 0 10,19 * * * /NODE_PATH/node /DAKA_FOLDER/daka.js >>/LOG_FOLDER/daka.log 2>&1
 ```
 
-### or use Github Actions(Under testing)
+### or use Github Actions
+
+> [Note](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule): The schedule event may be delayed. 
 
 - Change the cron you want (Github Actions use UTC time)
 
