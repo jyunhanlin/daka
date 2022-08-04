@@ -1,0 +1,32 @@
+name: Confirm the time
+
+on:
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  confirm:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Start Time
+        run: date
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: See the time
+        run: node confirm.js
+
+      - name: End Time
+        run: date
