@@ -24,7 +24,7 @@ $ crontab -e
 
 ### or use Github Actions
 
-- Change the schedule you want (Github Actions seems use UTC time)
+- Change the cron you want (Github Actions use UTC time)
 
 ```yaml
 on:
