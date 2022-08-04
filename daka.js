@@ -12,7 +12,11 @@ const MAGIC_NUMBER = 5;
 
 const SESSION_LIFE_TIME = Math.floor(new Date().getTime() / 1000) + 1800; // copy from femas javascript
 const TODAY = new Date();
-const TODAY_WITH_TIMEZONE = subMinutes(TODAY, TODAY.getTimezoneOffset());
+const TODAY_WITH_TIMEZONE = subMinutes(
+  TODAY,
+  TODAY.getTimezoneOffset() !== 0 ? TODAY.getTimezoneOffset() : -480 // -480 is UTC+08:00
+);
+const HOUR_WITH_TIMEZONE = TODAY_WITH_TIMEZONE.getUTCHours();
 
 const login = async () => {
   const getCookieResponse = await fetch('https://femascloud.com/swag/');
@@ -47,7 +51,7 @@ const login = async () => {
 const daka = async ({ session, ClockRecordUserId, AttRecordUserId }) => {
   const dakaData = new URLSearchParams();
 
-  const clockType = TODAY.getHours() >= 12 ? 'E' : 'S';
+  const clockType = HOUR_WITH_TIMEZONE >= 12 ? 'E' : 'S';
   console.log(clockType === 'E' ? 'bye' : 'gogo');
 
   dakaData.append('_method', 'POST');
@@ -150,7 +154,7 @@ const getRandomMinute = (min, max) => {
 const randomMinute = getRandomMinute(DELAY_MIN_MINUTE, DELAY_MAX_MINUTE);
 
 const delay =
-  TODAY.getHours() >= 12
+  HOUR_WITH_TIMEZONE >= 12
     ? Math.max(randomMinute, (DELAY_MAX_MINUTE / MAGIC_NUMBER) * 60)
     : randomMinute / MAGIC_NUMBER;
 
