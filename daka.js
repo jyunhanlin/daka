@@ -1,7 +1,7 @@
 require('dotenv').config();
 require('cross-fetch/polyfill');
 const cherrio = require('cheerio');
-const { format, startOfMonth, endOfMonth, eachDayOfInterval, subMinutes } = require('date-fns');
+const { startOfMonth, endOfMonth, eachDayOfInterval, subMinutes } = require('date-fns');
 
 const USER_NAME = process.env.FEMAS_USERNAME;
 const USER_PASSWORD = process.env.FEMAS_PASSWORD;
@@ -55,17 +55,21 @@ const login = async () => {
   return { session, ClockRecordUserId, AttRecordUserId };
 };
 
-const checkDakaDay = async ({ session }) => {
-  const startDayOfMonth = format(startOfMonth(UTC_TODAY), 'yyyy-MM-dd');
-  const lastDayOfMonth = format(endOfMonth(UTC_TODAY), 'yyyy-MM-dd');
+const format = (date) => {
+  return date.toISOString().split('T')[0];
+};
 
-  const dakaDay = format(UTC_TODAY, 'yyyy-MM-dd');
+const checkDakaDay = async ({ session }) => {
+  const startDayOfMonth = format(startOfMonth(TODAY));
+  const lastDayOfMonth = format(endOfMonth(TODAY));
+
+  const dakaDay = format(TODAY);
 
   const getDaysArray = (start, end) =>
     eachDayOfInterval({
       start: new Date(start),
       end: new Date(end),
-    }).map((day) => format(day, 'yyyy-MM-dd'));
+    }).map((day) => format(day));
 
   const [holidaysResponse, personalEventsResponse] = await Promise.all([
     fetch(
