@@ -186,5 +186,4 @@ const delay =
     : randomMinute / MAGIC_NUMBER;
 
 console.log(`daka delay ${delay / 60} mins`);
-// setTimeout(main, delay * 1000);
-main();
+setTimeout(main, delay * 1000);
