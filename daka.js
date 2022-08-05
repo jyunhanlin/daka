@@ -9,14 +9,15 @@ const DELAY_MIN_MINS = process.env.DELAY_MIN_MINS || 1;
 const DELAY_MAX_MINS = process.env.DELAY_MAX_MINS || 15;
 
 const MAGIC_NUMBER = 5;
-
+const CST_TIMEZONE_OFFSET = -480;
 const SESSION_LIFE_TIME = Math.floor(new Date().getTime() / 1000) + 1800; // copy from femas javascript
-const TODAY = new Date();
-const TODAY_WITH_TIMEZONE = subMinutes(
-  TODAY,
-  TODAY.getTimezoneOffset() !== 0 ? TODAY.getTimezoneOffset() : -480 // -480 is UTC+08:00
+
+const UTC_TODAY = new Date();
+const TODAY = subMinutes(
+  UTC_TODAY,
+  UTC_TODAY.getTimezoneOffset() !== 0 ? UTC_TODAY.getTimezoneOffset() : CST_TIMEZONE_OFFSET
 );
-const HOUR_WITH_TIMEZONE = TODAY_WITH_TIMEZONE.getUTCHours();
+const HOUR = TODAY.getUTCHours();
 
 const login = async () => {
   const getCookieResponse = await fetch('https://femascloud.com/swag/');
@@ -57,7 +58,7 @@ const login = async () => {
 const daka = async ({ session, ClockRecordUserId, AttRecordUserId }) => {
   const dakaData = new URLSearchParams();
 
-  const clockType = HOUR_WITH_TIMEZONE >= 12 ? 'E' : 'S';
+  const clockType = HOUR >= 12 ? 'E' : 'S';
   console.log(clockType === 'E' ? 'bye' : 'gogo');
 
   dakaData.append('_method', 'POST');
@@ -99,8 +100,8 @@ const daka = async ({ session, ClockRecordUserId, AttRecordUserId }) => {
 };
 
 const checkDakaDay = async ({ session }) => {
-  const startDayOfMonth = format(startOfMonth(TODAY_WITH_TIMEZONE), 'yyyy-MM-dd');
-  const lastDayOfMonth = format(endOfMonth(TODAY_WITH_TIMEZONE), 'yyyy-MM-dd');
+  const startDayOfMonth = format(startOfMonth(TODAY), 'yyyy-MM-dd');
+  const lastDayOfMonth = format(endOfMonth(TODAY), 'yyyy-MM-dd');
 
   const dakaDay = format(TODAY, 'yyyy-MM-dd');
 
@@ -180,7 +181,7 @@ const getRandomMinute = (min, max) => {
 const randomMinute = getRandomMinute(DELAY_MIN_MINS, DELAY_MAX_MINS);
 
 const delay =
-  HOUR_WITH_TIMEZONE >= 12
+  HOUR >= 12
     ? Math.max(randomMinute, (DELAY_MAX_MINS / MAGIC_NUMBER) * 60)
     : randomMinute / MAGIC_NUMBER;
 
