@@ -56,10 +56,10 @@ const login = async () => {
 };
 
 const checkDakaDay = async ({ session }) => {
-  const startDayOfMonth = format(startOfMonth(TODAY), 'yyyy-MM-dd');
-  const lastDayOfMonth = format(endOfMonth(TODAY), 'yyyy-MM-dd');
+  const startDayOfMonth = format(startOfMonth(UTC_TODAY), 'yyyy-MM-dd');
+  const lastDayOfMonth = format(endOfMonth(UTC_TODAY), 'yyyy-MM-dd');
 
-  const dakaDay = format(TODAY, 'yyyy-MM-dd');
+  const dakaDay = format(UTC_TODAY, 'yyyy-MM-dd');
 
   const getDaysArray = (start, end) =>
     eachDayOfInterval({
@@ -186,4 +186,5 @@ const delay =
     : randomMinute / MAGIC_NUMBER;
 
 console.log(`daka delay ${delay / 60} mins`);
-setTimeout(main, delay * 1000);
+// setTimeout(main, delay * 1000);
+main();
