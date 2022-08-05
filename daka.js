@@ -55,50 +55,6 @@ const login = async () => {
   return { session, ClockRecordUserId, AttRecordUserId };
 };
 
-const daka = async ({ session, ClockRecordUserId, AttRecordUserId }) => {
-  const dakaData = new URLSearchParams();
-
-  const clockType = HOUR >= 12 ? 'E' : 'S';
-  console.log(clockType === 'E' ? 'bye' : 'gogo');
-
-  dakaData.append('_method', 'POST');
-  dakaData.append('data[ClockRecord][user_id]', ClockRecordUserId);
-  dakaData.append('data[AttRecord][user_id]', AttRecordUserId);
-  dakaData.append('data[ClockRecord][shift_id]', '2');
-  dakaData.append('data[ClockRecord][period]', '1');
-  dakaData.append('data[ClockRecord][clock_type]', clockType);
-  dakaData.append('data[ClockRecord][latitude]', '');
-  dakaData.append('data[ClockRecord][longitude]', '');
-
-  const dakaResponse = await fetch('https://femascloud.com/swag/users/clock_listing', {
-    headers: {
-      'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-      'x-requested-with': 'XMLHttpRequest',
-      cookie: `swag=${session};  lifeTimePointswag=${SESSION_LIFE_TIME}`,
-      Referer: 'https://femascloud.com/swag/users/main?from=/Accounts/login?ext=html',
-    },
-
-    body: dakaData,
-    method: 'POST',
-  });
-
-  const html = await dakaResponse.text();
-
-  const $ = cherrio.load(html);
-
-  const dakaRecords = $('.textBlue');
-
-  let dakaTime;
-  if (clockType !== 'E') dakaTime = dakaRecords.eq(0).text().trim();
-  else dakaTime = dakaRecords.eq(1).text().trim();
-
-  if (!dakaTime) {
-    throw new Error('daka error');
-  }
-
-  console.log(`daka success, time: ${dakaTime}`);
-};
-
 const checkDakaDay = async ({ session }) => {
   const startDayOfMonth = format(startOfMonth(TODAY), 'yyyy-MM-dd');
   const lastDayOfMonth = format(endOfMonth(TODAY), 'yyyy-MM-dd');
@@ -156,6 +112,50 @@ const checkDakaDay = async ({ session }) => {
   return shouldDakaToday;
 };
 
+const daka = async ({ session, ClockRecordUserId, AttRecordUserId }) => {
+  const dakaData = new URLSearchParams();
+
+  const clockType = HOUR >= 12 ? 'E' : 'S';
+  console.log(clockType === 'E' ? 'bye' : 'gogo');
+
+  dakaData.append('_method', 'POST');
+  dakaData.append('data[ClockRecord][user_id]', ClockRecordUserId);
+  dakaData.append('data[AttRecord][user_id]', AttRecordUserId);
+  dakaData.append('data[ClockRecord][shift_id]', '2');
+  dakaData.append('data[ClockRecord][period]', '1');
+  dakaData.append('data[ClockRecord][clock_type]', clockType);
+  dakaData.append('data[ClockRecord][latitude]', '');
+  dakaData.append('data[ClockRecord][longitude]', '');
+
+  const dakaResponse = await fetch('https://femascloud.com/swag/users/clock_listing', {
+    headers: {
+      'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+      'x-requested-with': 'XMLHttpRequest',
+      cookie: `swag=${session};  lifeTimePointswag=${SESSION_LIFE_TIME}`,
+      Referer: 'https://femascloud.com/swag/users/main?from=/Accounts/login?ext=html',
+    },
+
+    body: dakaData,
+    method: 'POST',
+  });
+
+  const html = await dakaResponse.text();
+
+  const $ = cherrio.load(html);
+
+  const dakaRecords = $('.textBlue');
+
+  let dakaTime;
+  if (clockType !== 'E') dakaTime = dakaRecords.eq(0).text().trim();
+  else dakaTime = dakaRecords.eq(1).text().trim();
+
+  if (!dakaTime) {
+    throw new Error('daka error');
+  }
+
+  console.log(`daka success, time: ${dakaTime}`);
+};
+
 const main = async () => {
   console.log('===== start =====');
   try {
@@ -169,7 +169,7 @@ const main = async () => {
   } catch (e) {
     console.error(e);
   }
-  console.log('===== end =====');
+  console.log('====== end ======');
 };
 
 const getRandomMinute = (min, max) => {
