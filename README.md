@@ -10,23 +10,24 @@ $ npm install
 
 ## Usage
 
-1. Copy `example.env` to `.env`
-2. Enter your username and password
-3. Change the DELAY_MIN_MINS or DELAY_MAX_MINS if you want to change the delay time
+Choose `Crontab` or/and `Github Actions` to set the schedule.
 
 ### Crontab
 
-```bash
-$ crontab -e
-```
+- Copy `example.env` to `.env`
+- Enter your username and password
+- Change the DELAY_MIN_MINS or DELAY_MAX_MINS if you want to change the delay time
+- Edit the `crontab`
 
 ```bash
+$ crontab -e
+
 0 10,19 * * * /NODE_PATH/node /DAKA_FOLDER/daka.js >>/LOG_FOLDER/daka.log 2>&1
 ```
 
-### or use Github Actions
+### Github Actions
 
-> [Note](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule): The schedule event may be delayed. 
+> [Note](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule): The schedule event may be delayed.
 
 - Change the cron you want (Github Actions use UTC time)
 
