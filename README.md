@@ -10,7 +10,7 @@ $ npm install
 
 ## Usage
 
-Choose `Crontab` or/and `Github Actions` to set the schedule.
+Choose `Crontab` and/or `Github Actions` to set the schedule.
 
 ### Crontab
 
