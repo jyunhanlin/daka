@@ -1,5 +1,7 @@
 # Daka
 
+Check the holidays, and your personal events, then daka!!
+
 ## Install
 
 ```bash
