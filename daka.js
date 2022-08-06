@@ -41,7 +41,7 @@ const login = async () => {
 
   const html = await postLoginResponse.text();
 
-  if (html.includes('密碼錯誤')) {
+  if (html.includes('密碼錯誤') || html.includes('請先輸入登入帳號及密碼')) {
     throw new Error('user/password error');
   }
 
