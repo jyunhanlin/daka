@@ -2,17 +2,17 @@
 
 Check the holidays, and your personal events, then daka!!
 
-## Install
+## Usage
+
+Use `Crontab`, `Github Actions`, or `Docker` to run the schedule.
+
+### Crontab
+
+- Install
 
 ```bash
 $ npm install
 ```
-
-## Usage
-
-Choose `Crontab` and/or `Github Actions` to set the schedule.
-
-### Crontab
 
 - Copy `example.env` to `.env`
 - Enter your username and password
@@ -29,7 +29,7 @@ $ crontab -e
 
 > [Note](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule): The schedule event may be delayed.
 
-- Change the cron you want (Github Actions use UTC time)
+- Modify the schedule you want (Github Actions use UTC time)
 
 ```yaml
 on:
@@ -43,3 +43,17 @@ on:
   - FEMAS_PASSWORD: your password for FEMAS
   - DELAY_MIN_MINS: the minimum delay minutes (default: 1) (optional)
   - DELAY_MAX_MINS: the maximum delay minutes (default: 15) (optional)
+
+### Docker
+
+- Pull the image from my Docker Hub or build your own docker image
+
+```bash
+$ docker pull jyunhanlin/daka:latest
+```
+
+- Run the image with your username and password
+
+```bash
+$ docker run -e FEMAS_USERNAME USERNAME -e FEMAS_PASSWORD PASSWORD DAKA_IMAGE
+```
