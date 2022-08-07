@@ -50,9 +50,13 @@ on:
 
 ```bash
 $ docker pull jyunhanlin/daka:latest
+
+or
+
+$ docker build -t daka .
 ```
 
-- Run the image with your username and password
+- Run the image with username and password
 
 ```bash
 $ docker run -e FEMAS_USERNAME USERNAME -e FEMAS_PASSWORD PASSWORD DAKA_IMAGE
