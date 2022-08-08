@@ -63,6 +63,6 @@ $ docker build -t daka .
 - Run the image with username and password
 
 ```bash
-$ docker run -e FEMAS_DOMAIN DOMAIN -e FEMAS_USERNAME USERNAME -e FEMAS_PASSWORD PASSWORD DAKA_IMAGE
-# -e DELAY_MIN_MINS 1 -e DELAY_MAX_MINS 15 (optional)
+$ docker run -e FEMAS_DOMAIN=DOMAIN -e FEMAS_USERNAME=USERNAME -e FEMAS_PASSWORD=PASSWORD DAKA_IMAGE
+# -e DELAY_MIN_MINS=1 -e DELAY_MAX_MINS=15 (optional)
 ```
