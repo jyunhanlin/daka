@@ -192,5 +192,8 @@ const delay =
     ? Math.max(randomMinute, (DELAY_MAX_MINS / MAGIC_NUMBER) * 60)
     : randomMinute / MAGIC_NUMBER;
 
-console.log(`daka delay ${delay / 60} mins`);
-setTimeout(main, delay * 1000);
+if (process.env.IMMEDIATE_DAKA) main();
+else {
+  console.log(`daka delay ${delay / 60} mins`);
+  setTimeout(main, delay * 1000);
+}
