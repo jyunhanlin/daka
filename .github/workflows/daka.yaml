@@ -24,6 +24,7 @@ jobs:
       - name: Let's Daka
         run: node daka.js
         env:
+          FEMAS_DOMAIN: ${{ secrets.FEMAS_DOMAIN}}
           FEMAS_USERNAME: ${{ secrets.FEMAS_USERNAME }}
           FEMAS_PASSWORD: ${{ secrets.FEMAS_PASSWORD }}
           DELAY_MIN_MINS: ${{ secrets.DELAY_MIN_MINS }}
