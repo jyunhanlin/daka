@@ -15,8 +15,12 @@ $ npm install
 ```
 
 - Copy `example.env` to `.env`
-- Enter your username and password
-- Change the DELAY_MIN_MINS or DELAY_MAX_MINS if you want to change the delay time
+- Change the env
+  - FEMAS_DOMAIN: the company domain for FEMAS
+  - FEMAS_USERNAME: your username for FEMAS
+  - FEMAS_PASSWORD: your password for FEMAS
+  - DELAY_MIN_MINS: the minimum delay minutes
+  - DELAY_MAX_MINS: the maximum delay minutes
 - Edit the `crontab`
 
 ```bash
@@ -34,11 +38,11 @@ $ crontab -e
 ```yaml
 on:
   schedule:
-    - cron: '30 1 * * *'
-    - cron: '0 11 * * *'
+    - cron: '0 0,11 * * *'
 ```
 
 - Add secrets to Github Actions
+  - FEMAS_DOMAIN: the company domain for FEMAS
   - FEMAS_USERNAME: your username for FEMAS
   - FEMAS_PASSWORD: your password for FEMAS
   - DELAY_MIN_MINS: the minimum delay minutes (default: 1) (optional)
@@ -59,5 +63,6 @@ $ docker build -t daka .
 - Run the image with username and password
 
 ```bash
-$ docker run -e FEMAS_USERNAME USERNAME -e FEMAS_PASSWORD PASSWORD DAKA_IMAGE
+$ docker run -e FEMAS_DOMAIN DOMAIN -e FEMAS_USERNAME USERNAME -e FEMAS_PASSWORD PASSWORD DAKA_IMAGE
+# -e DELAY_MIN_MINS 1 -e DELAY_MAX_MINS 15 (optional)
 ```

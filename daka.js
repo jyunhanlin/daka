@@ -3,6 +3,7 @@ require('cross-fetch/polyfill');
 const cherrio = require('cheerio');
 const { startOfMonth, endOfMonth, eachDayOfInterval, subMinutes } = require('date-fns');
 
+const DOMAIN = process.env.FEMAS_DOMAIN;
 const USER_NAME = process.env.FEMAS_USERNAME;
 const USER_PASSWORD = process.env.FEMAS_PASSWORD;
 const DELAY_MIN_MINS = process.env.DELAY_MIN_MINS || 1;
@@ -20,7 +21,7 @@ const TODAY = subMinutes(
 const HOUR = TODAY.getUTCHours();
 
 const login = async () => {
-  const getCookieResponse = await fetch('https://femascloud.com/swag/');
+  const getCookieResponse = await fetch(`https://femascloud.com/${DOMAIN}/`);
 
   const session = `${getCookieResponse.headers['set-cookie']}`.split(';')[0].split('=')[1];
 
@@ -30,10 +31,10 @@ const login = async () => {
   loginData.append('data[Account][passwd]', USER_PASSWORD);
   loginData.append('data[remember]', 0);
 
-  const postLoginResponse = await fetch('https://femascloud.com/swag/Accounts/login', {
+  const postLoginResponse = await fetch(`https://femascloud.com/${DOMAIN}/Accounts/login`, {
     headers: {
       'content-type': 'application/x-www-form-urlencoded',
-      cookie: `swag=${session}`,
+      cookie: `${DOMAIN}=${session}`,
     },
     body: loginData,
     method: 'POST',
@@ -73,21 +74,21 @@ const checkDakaDay = async ({ session }) => {
 
   const [holidaysResponse, personalEventsResponse] = await Promise.all([
     fetch(
-      `https://femascloud.com/swag/Holidays/get_holidays?start=${startDayOfMonth}&end=${lastDayOfMonth}&_=${Date.now()}`,
+      `https://femascloud.com/${DOMAIN}/Holidays/get_holidays?start=${startDayOfMonth}&end=${lastDayOfMonth}&_=${Date.now()}`,
       {
         headers: {
-          cookie: `swag=${session};  lifeTimePointswag=${SESSION_LIFE_TIME}`,
-          Referer: 'https://femascloud.com/swag/Holidays/browse',
+          cookie: `${DOMAIN}=${session};  lifeTimePoint${DOMAIN}=${SESSION_LIFE_TIME}`,
+          Referer: `https://femascloud.com/${DOMAIN}/Holidays/browse`,
         },
         method: 'GET',
       }
     ),
     fetch(
-      `https://femascloud.com/swag/Holidays/get_events?start=${startDayOfMonth}&end=${lastDayOfMonth}&_=${Date.now()}`,
+      `https://femascloud.com/${DOMAIN}/Holidays/get_events?start=${startDayOfMonth}&end=${lastDayOfMonth}&_=${Date.now()}`,
       {
         headers: {
-          cookie: `swag=${session};  lifeTimePointswag=${SESSION_LIFE_TIME}`,
-          Referer: 'https://femascloud.com/swag/Holidays/browse',
+          cookie: `${DOMAIN}=${session};  lifeTimePoint${DOMAIN}=${SESSION_LIFE_TIME}`,
+          Referer: `https://femascloud.com/${DOMAIN}/Holidays/browse`,
         },
         method: 'GET',
       }
@@ -131,12 +132,12 @@ const daka = async ({ session, ClockRecordUserId, AttRecordUserId }) => {
   dakaData.append('data[ClockRecord][latitude]', '');
   dakaData.append('data[ClockRecord][longitude]', '');
 
-  const dakaResponse = await fetch('https://femascloud.com/swag/users/clock_listing', {
+  const dakaResponse = await fetch(`https://femascloud.com/${DOMAIN}/users/clock_listing`, {
     headers: {
       'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
       'x-requested-with': 'XMLHttpRequest',
-      cookie: `swag=${session};  lifeTimePointswag=${SESSION_LIFE_TIME}`,
-      Referer: 'https://femascloud.com/swag/users/main?from=/Accounts/login?ext=html',
+      cookie: `${DOMAIN}=${session};  lifeTimePoint${DOMAIN}=${SESSION_LIFE_TIME}`,
+      Referer: `https://femascloud.com/${DOMAIN}/users/main?from=/Accounts/login?ext=html`,
     },
 
     body: dakaData,
