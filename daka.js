@@ -1,6 +1,6 @@
 require('dotenv').config();
 require('cross-fetch/polyfill');
-const cherrio = require('cheerio');
+
 const { startOfMonth, endOfMonth, eachDayOfInterval, subMinutes } = require('date-fns');
 
 const DOMAIN = process.env.FEMAS_DOMAIN;
@@ -46,6 +46,7 @@ const login = async () => {
     throw new Error('user/password error');
   }
 
+  const cherrio = require('cheerio');
   const $ = cherrio.load(html);
 
   const ClockRecordUserId = $('#ClockRecordUserId').val();
@@ -146,6 +147,7 @@ const daka = async ({ session, ClockRecordUserId, AttRecordUserId }) => {
 
   const html = await dakaResponse.text();
 
+  const cherrio = require('cheerio');
   const $ = cherrio.load(html);
 
   const dakaRecords = $('.textBlue');
