@@ -69,5 +69,5 @@ $ docker run -e FEMAS_DOMAIN=DOMAIN -e FEMAS_USERNAME=USERNAME -e FEMAS_PASSWORD
 
 ### Other environment variables
 
-- IMMEDIATELY_DAKA: immediate daka (default: false) (optional)
+- IMMEDIATE_DAKA: immediate daka (default: false) (optional)
 - MAX_RETRY_COUNT: total retry times (default: 3) (optional)

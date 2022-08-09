@@ -8,7 +8,7 @@ const USER_NAME = process.env.FEMAS_USERNAME;
 const USER_PASSWORD = process.env.FEMAS_PASSWORD;
 const DELAY_MIN_MINS = process.env.DELAY_MIN_MINS || 1;
 const DELAY_MAX_MINS = process.env.DELAY_MAX_MINS || 15;
-const IMMEDIATELY_DAKA = process.env.IMMEDIATELY_DAKA || false;
+const IMMEDIATE_DAKA = process.env.IMMEDIATE_DAKA || false;
 const MAX_RETRY_COUNT = process.env.MAX_RETRY_COUNT || 3;
 
 const MAGIC_NUMBER = 5;
@@ -204,7 +204,7 @@ const delay =
     ? Math.max(randomMinute, (DELAY_MAX_MINS / MAGIC_NUMBER) * 60)
     : randomMinute / MAGIC_NUMBER;
 
-if (IMMEDIATELY_DAKA) main();
+if (IMMEDIATE_DAKA) main();
 else {
   console.log(`daka delay ${delay / 60} mins`);
   setTimeout(main, delay * 1000);
