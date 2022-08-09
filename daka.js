@@ -183,9 +183,7 @@ const main = async () => {
     console.error(e);
 
     if (retryCount < MAX_RETRY_COUNT) {
-      console.log(
-        `Some error happen, retry in 3 secs, total: ${MAX_RETRY_COUNT}, current: ${retryCount}`
-      );
+      console.log('Some error happen, retry in 3 secs');
       retryCount += 1;
       setTimeout(main, 3000);
     }
