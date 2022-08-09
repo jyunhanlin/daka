@@ -164,6 +164,8 @@ const daka = async ({ session, ClockRecordUserId, AttRecordUserId }) => {
   console.log(`daka success, time: ${dakaTime}`);
 };
 
+let retryCount = 0;
+
 const main = async () => {
   console.log('===== start =====');
   try {
@@ -174,8 +176,15 @@ const main = async () => {
     if (isDakaDay) {
       await daka({ session, ClockRecordUserId, AttRecordUserId });
     }
+    retryCount = 0;
   } catch (e) {
-    console.error(e);
+    if (process.env.RETRY && retryCount < process.env.RETRY) {
+      console.log(
+        `Some error happen, retry in 3 secs, total: ${process.env.RETRY}, current: ${retryCount}`
+      );
+      retryCount += 1;
+      setTimeout(main, 3000);
+    } else console.error(e);
   }
   console.log('====== end ======');
 };
