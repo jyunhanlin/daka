@@ -8,6 +8,8 @@ const USER_NAME = process.env.FEMAS_USERNAME;
 const USER_PASSWORD = process.env.FEMAS_PASSWORD;
 const DELAY_MIN_MINS = process.env.DELAY_MIN_MINS || 1;
 const DELAY_MAX_MINS = process.env.DELAY_MAX_MINS || 15;
+const IMMEDIATE_DAKA = process.env.IMMEDIATE_DAKA || false;
+const MAX_RETRY_COUNT = process.env.MAX_RETRY_COUNT || 3;
 
 const MAGIC_NUMBER = 5;
 const CST_TIMEZONE_OFFSET = -480;
@@ -178,13 +180,15 @@ const main = async () => {
     }
     retryCount = 0;
   } catch (e) {
-    if (process.env.RETRY && retryCount < process.env.RETRY) {
+    console.error(e);
+
+    if (retryCount < MAX_RETRY_COUNT) {
       console.log(
-        `Some error happen, retry in 3 secs, total: ${process.env.RETRY}, current: ${retryCount}`
+        `Some error happen, retry in 3 secs, total: ${MAX_RETRY_COUNT}, current: ${retryCount}`
       );
       retryCount += 1;
       setTimeout(main, 3000);
-    } else console.error(e);
+    }
   }
   console.log('====== end ======');
 };
@@ -202,7 +206,7 @@ const delay =
     ? Math.max(randomMinute, (DELAY_MAX_MINS / MAGIC_NUMBER) * 60)
     : randomMinute / MAGIC_NUMBER;
 
-if (process.env.IMMEDIATE_DAKA) main();
+if (IMMEDIATE_DAKA) main();
 else {
   console.log(`daka delay ${delay / 60} mins`);
   setTimeout(main, delay * 1000);
