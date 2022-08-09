@@ -13,11 +13,15 @@ const MAGIC_NUMBER = 5;
 const CST_TIMEZONE_OFFSET = -480;
 const SESSION_LIFE_TIME = Math.floor(new Date().getTime() / 1000) + 1800; // copy from femas javascript
 
+const getCSTDate = (date) =>
+  subMinutes(date, date.getTimezoneOffset() !== 0 ? date.getTimezoneOffset() : CST_TIMEZONE_OFFSET);
+
+const format = (date) => {
+  return date.toISOString().split('T')[0];
+};
+
 const UTC_TODAY = new Date();
-const TODAY = subMinutes(
-  UTC_TODAY,
-  UTC_TODAY.getTimezoneOffset() !== 0 ? UTC_TODAY.getTimezoneOffset() : CST_TIMEZONE_OFFSET
-);
+const TODAY = getCSTDate(UTC_TODAY);
 const HOUR = TODAY.getUTCHours();
 
 const login = async () => {
@@ -52,13 +56,10 @@ const login = async () => {
   const ClockRecordUserId = $('#ClockRecordUserId').val();
   const AttRecordUserId = $('#AttRecordUserId').val();
 
-  console.log('login success');
+  if (ClockRecordUserId && AttRecordUserId) console.log('login success');
+  else throw new Error('login maybe error, did not get the id');
 
   return { session, ClockRecordUserId, AttRecordUserId };
-};
-
-const format = (date) => {
-  return date.toISOString().split('T')[0];
 };
 
 const checkDakaDay = async ({ session }) => {
@@ -71,7 +72,7 @@ const checkDakaDay = async ({ session }) => {
     eachDayOfInterval({
       start: new Date(start),
       end: new Date(end),
-    }).map((day) => format(day));
+    }).map((day) => format(getCSTDate(day)));
 
   const [holidaysResponse, personalEventsResponse] = await Promise.all([
     fetch(
