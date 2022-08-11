@@ -54,6 +54,8 @@ const login = async () => {
   const isLogin = $('#login_user');
 
   if (!isLogin.length) {
+    console.log({ session });
+    console.log(html);
     throw new Error('user/password error');
   }
 

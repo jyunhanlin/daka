@@ -61,3 +61,8 @@ jobs:
           stale-issue-message: 'Close stale issue'
           days-before-stale: 1
           days-before-close: 3
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: result
+          path: result.md
