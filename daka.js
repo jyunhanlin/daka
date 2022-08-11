@@ -48,12 +48,14 @@ const login = async () => {
 
   const html = await postLoginResponse.text();
 
-  if (html.includes('密碼錯誤') || html.includes('請先輸入登入帳號及密碼')) {
-    throw new Error('user/password error');
-  }
-
   const cherrio = require('cheerio');
   const $ = cherrio.load(html);
+
+  const isLogin = $('#login_user');
+
+  if (!isLogin.length) {
+    throw new Error('user/password error');
+  }
 
   const ClockRecordUserId = $('#ClockRecordUserId').val();
   const AttRecordUserId = $('#AttRecordUserId').val();
