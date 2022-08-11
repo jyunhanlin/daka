@@ -22,10 +22,42 @@ jobs:
         run: npm install
 
       - name: Let's Daka
-        run: node daka.js
+        id: daka
+        run: |
+          result=$(node daka.js)
+
+          if [[ $result == *"daka success"* || $result == *"not daka"* ]]; then
+            echo "Daka Success"
+          else
+            echo "Daka Failed"
+            echo $result > result.md
+            echo "::set-output name=result::error"
+          fi
         env:
           FEMAS_DOMAIN: ${{ secrets.FEMAS_DOMAIN}}
           FEMAS_USERNAME: ${{ secrets.FEMAS_USERNAME }}
           FEMAS_PASSWORD: ${{ secrets.FEMAS_PASSWORD }}
           DELAY_MIN_MINS: ${{ secrets.DELAY_MIN_MINS }}
           DELAY_MAX_MINS: ${{ secrets.DELAY_MAX_MINS }}
+
+      - name: Get time with timezone
+        id: time
+        if: ${{ steps.daka.outputs.result == 'error' }}
+        uses: nanzm/get-time-action@v1.1
+        with:
+          timeZone: 8
+          format: 'YYYY-MM-DD HH:mm'
+
+      - name: Create issue from file
+        uses: peter-evans/create-issue-from-file@v4
+        if: ${{ steps.daka.outputs.result == 'error' }}
+        with:
+          title: Daka failed at ${{ steps.time.outputs.time }}
+          content-filepath: ./result.md
+
+      - name: Close issue while stale
+        uses: actions/stale@v5
+        with:
+          stale-issue-message: 'Close stale issue'
+          days-before-stale: 1
+          days-before-close: 3
