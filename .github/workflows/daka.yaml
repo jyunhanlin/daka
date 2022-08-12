@@ -26,8 +26,14 @@ jobs:
         run: |
           result=$(node daka.js)
 
-          if [[ $result == *"daka success"* || $result == *"not daka"* ]]; then
+          if [[ $result == *"daka success"* ]]; then
             echo "Daka Success"
+            echo $result > result.md
+            echo "::set-output name=result::success"
+          elif [[ $result == *"not daka"*]]; then
+            echo "No Daka"
+            echo $result > result.md
+            echo "::set-output name=result::no need"
           else
             echo "Daka Failed"
             echo $result > result.md
@@ -42,7 +48,6 @@ jobs:
 
       - name: Get time with timezone
         id: time
-        if: ${{ steps.daka.outputs.result == 'error' }}
         uses: nanzm/get-time-action@v1.1
         with:
           timeZone: 8
@@ -52,7 +57,7 @@ jobs:
         uses: peter-evans/create-issue-from-file@v4
         if: ${{ steps.daka.outputs.result == 'error' }}
         with:
-          title: Daka failed at ${{ steps.time.outputs.time }}
+          title: Daka ${{ steps.daka.outputs.result }} at ${{ steps.time.outputs.time }}
           content-filepath: ./result.md
 
       - name: Close issue while stale
@@ -65,4 +70,4 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: result
-          path: result.md
+          path: ./result.md

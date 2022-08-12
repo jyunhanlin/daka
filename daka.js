@@ -27,10 +27,6 @@ const TODAY = getCSTDate(UTC_TODAY);
 const HOUR = TODAY.getUTCHours();
 
 const login = async () => {
-  const getCookieResponse = await fetch(`https://femascloud.com/${DOMAIN}/`);
-
-  const session = `${getCookieResponse.headers['set-cookie']}`.split(';')[0].split('=')[1];
-
   const loginData = new URLSearchParams();
 
   loginData.append('data[Account][username]', USER_NAME);
@@ -40,7 +36,7 @@ const login = async () => {
   const postLoginResponse = await fetch(`https://femascloud.com/${DOMAIN}/Accounts/login`, {
     headers: {
       'content-type': 'application/x-www-form-urlencoded',
-      cookie: `${DOMAIN}=${session}`,
+      cookie: `${DOMAIN}=`,
     },
     body: loginData,
     method: 'POST',
@@ -51,24 +47,19 @@ const login = async () => {
   const cherrio = require('cheerio');
   const $ = cherrio.load(html);
 
-  const isLogin = $('#login_user');
-
-  if (!isLogin.length) {
-    console.log({ session });
-    console.log(html);
-    throw new Error('user/password error');
-  }
-
   const ClockRecordUserId = $('#ClockRecordUserId').val();
   const AttRecordUserId = $('#AttRecordUserId').val();
 
   if (ClockRecordUserId && AttRecordUserId) console.log('login success');
-  else throw new Error('login maybe error, did not get the id');
+  else {
+    console.log({ html });
+    throw new Error('login maybe error, did not get the id');
+  }
 
-  return { session, ClockRecordUserId, AttRecordUserId };
+  return { ClockRecordUserId, AttRecordUserId };
 };
 
-const checkDakaDay = async ({ session }) => {
+const checkDakaDay = async () => {
   const startDayOfMonth = format(startOfMonth(TODAY));
   const lastDayOfMonth = format(endOfMonth(TODAY));
 
@@ -85,7 +76,7 @@ const checkDakaDay = async ({ session }) => {
       `https://femascloud.com/${DOMAIN}/Holidays/get_holidays?start=${startDayOfMonth}&end=${lastDayOfMonth}&_=${Date.now()}`,
       {
         headers: {
-          cookie: `${DOMAIN}=${session};  lifeTimePoint${DOMAIN}=${SESSION_LIFE_TIME}`,
+          cookie: `${DOMAIN}=;  lifeTimePoint${DOMAIN}=${SESSION_LIFE_TIME}`,
           Referer: `https://femascloud.com/${DOMAIN}/Holidays/browse`,
         },
         method: 'GET',
@@ -95,7 +86,7 @@ const checkDakaDay = async ({ session }) => {
       `https://femascloud.com/${DOMAIN}/Holidays/get_events?start=${startDayOfMonth}&end=${lastDayOfMonth}&_=${Date.now()}`,
       {
         headers: {
-          cookie: `${DOMAIN}=${session};  lifeTimePoint${DOMAIN}=${SESSION_LIFE_TIME}`,
+          cookie: `${DOMAIN}=;  lifeTimePoint${DOMAIN}=${SESSION_LIFE_TIME}`,
           Referer: `https://femascloud.com/${DOMAIN}/Holidays/browse`,
         },
         method: 'GET',
@@ -125,7 +116,7 @@ const checkDakaDay = async ({ session }) => {
   return shouldDakaToday;
 };
 
-const daka = async ({ session, ClockRecordUserId, AttRecordUserId }) => {
+const daka = async ({ ClockRecordUserId, AttRecordUserId }) => {
   const dakaData = new URLSearchParams();
 
   const clockType = HOUR >= 12 ? 'E' : 'S';
@@ -144,7 +135,7 @@ const daka = async ({ session, ClockRecordUserId, AttRecordUserId }) => {
     headers: {
       'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
       'x-requested-with': 'XMLHttpRequest',
-      cookie: `${DOMAIN}=${session};  lifeTimePoint${DOMAIN}=${SESSION_LIFE_TIME}`,
+      cookie: `${DOMAIN}=;  lifeTimePoint${DOMAIN}=${SESSION_LIFE_TIME}`,
       Referer: `https://femascloud.com/${DOMAIN}/users/main?from=/Accounts/login?ext=html`,
     },
 
@@ -175,16 +166,16 @@ let retryCount = 0;
 const main = async () => {
   console.log('===== start =====');
   try {
-    const { session, ClockRecordUserId, AttRecordUserId } = await login();
+    const { ClockRecordUserId, AttRecordUserId } = await login();
 
-    const isDakaDay = await checkDakaDay({ session });
+    const isDakaDay = await checkDakaDay();
 
     if (isDakaDay) {
-      await daka({ session, ClockRecordUserId, AttRecordUserId });
+      await daka({ ClockRecordUserId, AttRecordUserId });
     }
     retryCount = 0;
   } catch (e) {
-    console.error(e);
+    console.log('Error:', e);
 
     if (retryCount < MAX_RETRY_COUNT) {
       console.log('Some error happen, retry in 3 secs');
