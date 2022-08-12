@@ -41,8 +41,8 @@ jobs:
           FEMAS_DOMAIN: ${{ secrets.FEMAS_DOMAIN}}
           FEMAS_USERNAME: ${{ secrets.FEMAS_USERNAME }}
           FEMAS_PASSWORD: ${{ secrets.FEMAS_PASSWORD }}
-          DELAY_MIN_MINS: ${{ secrets.DELAY_MIN_MINS }}
-          DELAY_MAX_MINS: ${{ secrets.DELAY_MAX_MINS }}
+          DELAY_START_MINS: ${{ secrets.DELAY_START_MINS }}
+          DELAY_END_MINS: ${{ secrets.DELAY_END_MINS }}
 
       - name: Get time with timezone
         id: time

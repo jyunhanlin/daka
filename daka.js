@@ -6,12 +6,11 @@ const { startOfMonth, endOfMonth, eachDayOfInterval, subMinutes } = require('dat
 const DOMAIN = process.env.FEMAS_DOMAIN;
 const USER_NAME = process.env.FEMAS_USERNAME;
 const USER_PASSWORD = process.env.FEMAS_PASSWORD;
-const DELAY_MIN_MINS = process.env.DELAY_MIN_MINS || 1;
-const DELAY_MAX_MINS = process.env.DELAY_MAX_MINS || 15;
+const DELAY_START_MINS = process.env.DELAY_START_MINS || 5;
+const DELAY_END_MINS = process.env.DELAY_END_MINS || 15;
 const IMMEDIATE_DAKA = process.env.IMMEDIATE_DAKA || false;
 const MAX_RETRY_COUNT = process.env.MAX_RETRY_COUNT || 3;
 
-const MAGIC_NUMBER = 5;
 const CST_TIMEZONE_OFFSET = -480;
 const SESSION_LIFE_TIME = Math.floor(new Date().getTime() / 1000) + 1800; // copy from femas javascript
 
@@ -192,12 +191,10 @@ const getRandomMinute = (min, max) => {
   return Math.floor(Math.random() * (maxMinute - minMinute + 1)) + minMinute;
 };
 
-const randomMinute = getRandomMinute(DELAY_MIN_MINS, DELAY_MAX_MINS);
-
 const delay =
   HOUR >= 12
-    ? Math.max(randomMinute, (DELAY_MAX_MINS / MAGIC_NUMBER) * 60)
-    : randomMinute / MAGIC_NUMBER;
+    ? getRandomMinute(DELAY_START_MINS, DELAY_END_MINS)
+    : getRandomMinute(0, DELAY_START_MINS);
 
 if (IMMEDIATE_DAKA) main();
 else {
