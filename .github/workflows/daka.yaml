@@ -30,7 +30,7 @@ jobs:
           if [[ $result == *"daka success"* ]]; then
             echo "Daka Success"
             echo "::set-output name=result::success"
-          elif [[ $result == *"not daka"*]]; then
+          elif [[ $result == *"not daka"* ]]; then
             echo "No Daka"
             echo "::set-output name=result::no need"
           else
