@@ -182,7 +182,7 @@ const main = async () => {
       setTimeout(main, 3000);
     }
   }
-  console.log('====== end ======');
+  console.log('===== end =====');
 };
 
 const getRandomMinute = (min, max) => {
