@@ -62,9 +62,9 @@ docker build -t daka .
 docker run -e FEMAS_DOMAIN=DOMAIN -e FEMAS_USERNAME=USERNAME -e FEMAS_PASSWORD=PASSWORD DAKA_IMAGE
 ```
 
-### Other environment variables
+### Other environment variables (optional)
 
 - DELAY_START_MINS: the delay mins before start daka, range from 0 to DELAY_START_MINS (default: 5)
 - DELAY_END_MINS: the delay mins before end daka, range from DELAY_START_MINS to DELAY_END_MINS (default: 15)
-- IMMEDIATE_DAKA: immediate daka (default: false) (optional)
-- MAX_RETRY_COUNT: total retry times (default: 3) (optional)
+- IMMEDIATE_DAKA: immediate daka (default: false)
+- MAX_RETRY_COUNT: total retry times (default: 3)
