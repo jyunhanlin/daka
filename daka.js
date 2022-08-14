@@ -160,10 +160,31 @@ const daka = async ({ ClockRecordUserId, AttRecordUserId }) => {
   console.log(`daka success, time: ${dakaTime}`);
 };
 
-let retryCount = 0;
+const getRandomMinute = (min, max) => {
+  const minMinute = min * 60;
+  const maxMinute = max * 60;
+  return Math.floor(Math.random() * (maxMinute - minMinute + 1)) + minMinute;
+};
 
+const delay = () => {
+  const delay =
+    HOUR >= 12
+      ? getRandomMinute(DELAY_START_MINS, DELAY_END_MINS)
+      : getRandomMinute(0, DELAY_START_MINS);
+
+  console.log(`daka delay ${delay / 60} mins`);
+
+  return new Promise((resolve) => {
+    setTimeout(resolve, delay);
+  });
+};
+
+let retryCount = 0;
 const main = async () => {
   console.log('===== start =====');
+
+  if (!IMMEDIATE_DAKA) await delay();
+
   try {
     const { ClockRecordUserId, AttRecordUserId } = await login();
 
@@ -185,19 +206,4 @@ const main = async () => {
   console.log('===== end =====');
 };
 
-const getRandomMinute = (min, max) => {
-  const minMinute = min * 60;
-  const maxMinute = max * 60;
-  return Math.floor(Math.random() * (maxMinute - minMinute + 1)) + minMinute;
-};
-
-const delay =
-  HOUR >= 12
-    ? getRandomMinute(DELAY_START_MINS, DELAY_END_MINS)
-    : getRandomMinute(0, DELAY_START_MINS);
-
-if (IMMEDIATE_DAKA) main();
-else {
-  console.log(`daka delay ${delay / 60} mins`);
-  setTimeout(main, delay * 1000);
-}
+main();
