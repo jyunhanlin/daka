@@ -62,6 +62,6 @@ jobs:
         with:
           stale-issue-message: 'Close stale issue'
           days-before-issue-stale: 1
-          days-before-issue-close: 1
+          days-before-issue-close: 0
           days-before-pr-stale: -1
           days-before-pr-close: -1
