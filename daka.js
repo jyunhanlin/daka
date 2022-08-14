@@ -25,6 +25,13 @@ const UTC_TODAY = new Date();
 const TODAY = getCSTDate(UTC_TODAY);
 const HOUR = TODAY.getUTCHours();
 
+// const getSession = async () => {
+//   let session = '';
+//   const getCookieResponse = await fetch(`https://femascloud.com/${DOMAIN}/`);
+
+//   session = `${getCookieResponse.headers.get('set-cookie')}`.split(';')[0].split('=')[1] || session;
+// };
+
 const login = async () => {
   const loginData = new URLSearchParams();
 
