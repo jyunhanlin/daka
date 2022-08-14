@@ -190,7 +190,7 @@ let retryCount = 0;
 const main = async () => {
   console.log('===== start =====');
 
-  if (!IMMEDIATE_DAKA) await delay();
+  if (!IMMEDIATE_DAKA && !retryCount) await delay();
 
   try {
     const { ClockRecordUserId, AttRecordUserId } = await login();
