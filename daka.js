@@ -182,7 +182,7 @@ const delay = () => {
   console.log(`daka delay ${delay / 60} mins`);
 
   return new Promise((resolve) => {
-    setTimeout(resolve, delay);
+    setTimeout(resolve, delay * 1000);
   });
 };
 
