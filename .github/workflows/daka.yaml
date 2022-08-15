@@ -43,6 +43,8 @@ jobs:
           FEMAS_PASSWORD: ${{ secrets.FEMAS_PASSWORD }}
           DELAY_START_MINS: ${{ secrets.DELAY_START_MINS }}
           DELAY_END_MINS: ${{ secrets.DELAY_END_MINS }}
+          IMMEDIATE_DAKA: ${{ secrets.IMMEDIATE_DAKA }}
+          MAX_RETRY_COUNT: ${{ secrets.MAX_RETRY_COUNT }}
 
       - name: Get time with timezone
         id: time
