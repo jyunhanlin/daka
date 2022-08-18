@@ -144,7 +144,6 @@ const daka = async ({ ClockRecordUserId, AttRecordUserId }) => {
       cookie: `${DOMAIN}=;  lifeTimePoint${DOMAIN}=${SESSION_LIFE_TIME}`,
       Referer: `https://femascloud.com/${DOMAIN}/users/main?from=/Accounts/login?ext=html`,
     },
-
     body: dakaData,
     method: 'POST',
   });
@@ -165,6 +164,16 @@ const daka = async ({ ClockRecordUserId, AttRecordUserId }) => {
   }
 
   console.log(`daka success, time: ${dakaTime}`);
+};
+
+const logout = () => {
+  fetch(`https://femascloud.com/${DOMAIN}/accounts/logout`, {
+    headers: {
+      cookie: `${DOMAIN}=;  lifeTimePoint${DOMAIN}=${SESSION_LIFE_TIME}`,
+      Referer: `https://femascloud.com/${DOMAIN}/users/main?from=/Accounts/login?ext=html`,
+    },
+    method: 'GET',
+  });
 };
 
 const getRandomMinute = (min, max) => {
@@ -207,9 +216,11 @@ const main = async () => {
     if (retryCount < MAX_RETRY_COUNT) {
       console.log('Some error happen, retry in 3 secs');
       retryCount += 1;
+      await logout();
       setTimeout(main, 3000);
     }
   }
+  logout();
   console.log('===== end =====');
 };
 
