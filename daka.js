@@ -25,14 +25,23 @@ const UTC_TODAY = new Date();
 const TODAY = getCSTDate(UTC_TODAY);
 const HOUR = TODAY.getUTCHours();
 
-// const getSession = async () => {
-//   let session = '';
-//   const getCookieResponse = await fetch(`https://femascloud.com/${DOMAIN}/`);
+const getSession = async () => {
+  let session = '';
+  const getCookieResponse = await fetch(`https://femascloud.com/${DOMAIN}/`);
 
-//   session = `${getCookieResponse.headers.get('set-cookie')}`.split(';')[0].split('=')[1] || session;
-// };
+  const sessions = getCookieResponse.headers
+    .get('set-cookie')
+    .split(';')
+    .filter((cookie) => cookie.includes('swag='))
+    .map((cookie) => cookie.replace(/.*swag=/, ''));
 
-const login = async () => {
+  // use last one cookie
+  session = sessions.length ? sessions[sessions.length - 1] : session;
+
+  return { session };
+};
+
+const login = async ({ session }) => {
   const loginData = new URLSearchParams();
 
   loginData.append('data[Account][username]', USER_NAME);
@@ -42,7 +51,7 @@ const login = async () => {
   const postLoginResponse = await fetch(`https://femascloud.com/${DOMAIN}/Accounts/login`, {
     headers: {
       'content-type': 'application/x-www-form-urlencoded',
-      cookie: `${DOMAIN}=`,
+      cookie: `${DOMAIN}=${session}`,
     },
     body: loginData,
     method: 'POST',
@@ -65,7 +74,7 @@ const login = async () => {
   return { ClockRecordUserId, AttRecordUserId };
 };
 
-const checkDakaDay = async () => {
+const checkDakaDay = async ({ session }) => {
   const startDayOfMonth = format(startOfMonth(TODAY));
   const lastDayOfMonth = format(endOfMonth(TODAY));
 
@@ -82,7 +91,7 @@ const checkDakaDay = async () => {
       `https://femascloud.com/${DOMAIN}/Holidays/get_holidays?start=${startDayOfMonth}&end=${lastDayOfMonth}&_=${Date.now()}`,
       {
         headers: {
-          cookie: `${DOMAIN}=;  lifeTimePoint${DOMAIN}=${SESSION_LIFE_TIME}`,
+          cookie: `${DOMAIN}=${session};  lifeTimePoint${DOMAIN}=${SESSION_LIFE_TIME}`,
           Referer: `https://femascloud.com/${DOMAIN}/Holidays/browse`,
         },
         method: 'GET',
@@ -92,7 +101,7 @@ const checkDakaDay = async () => {
       `https://femascloud.com/${DOMAIN}/Holidays/get_events?start=${startDayOfMonth}&end=${lastDayOfMonth}&_=${Date.now()}`,
       {
         headers: {
-          cookie: `${DOMAIN}=;  lifeTimePoint${DOMAIN}=${SESSION_LIFE_TIME}`,
+          cookie: `${DOMAIN}=${session};  lifeTimePoint${DOMAIN}=${SESSION_LIFE_TIME}`,
           Referer: `https://femascloud.com/${DOMAIN}/Holidays/browse`,
         },
         method: 'GET',
@@ -122,7 +131,7 @@ const checkDakaDay = async () => {
   return shouldDakaToday;
 };
 
-const daka = async ({ ClockRecordUserId, AttRecordUserId }) => {
+const daka = async ({ session, ClockRecordUserId, AttRecordUserId }) => {
   const dakaData = new URLSearchParams();
 
   const clockType = HOUR >= 12 ? 'E' : 'S';
@@ -141,7 +150,7 @@ const daka = async ({ ClockRecordUserId, AttRecordUserId }) => {
     headers: {
       'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
       'x-requested-with': 'XMLHttpRequest',
-      cookie: `${DOMAIN}=;  lifeTimePoint${DOMAIN}=${SESSION_LIFE_TIME}`,
+      cookie: `${DOMAIN}=${session};  lifeTimePoint${DOMAIN}=${SESSION_LIFE_TIME}`,
       Referer: `https://femascloud.com/${DOMAIN}/users/main?from=/Accounts/login?ext=html`,
     },
     body: dakaData,
@@ -166,10 +175,10 @@ const daka = async ({ ClockRecordUserId, AttRecordUserId }) => {
   console.log(`daka success, time: ${dakaTime}`);
 };
 
-const logout = () => {
+const logout = ({ session }) => {
   fetch(`https://femascloud.com/${DOMAIN}/accounts/logout`, {
     headers: {
-      cookie: `${DOMAIN}=;  lifeTimePoint${DOMAIN}=${SESSION_LIFE_TIME}`,
+      cookie: `${DOMAIN}=${session};  lifeTimePoint${DOMAIN}=${SESSION_LIFE_TIME}`,
       Referer: `https://femascloud.com/${DOMAIN}/users/main?from=/Accounts/login?ext=html`,
     },
     method: 'GET',
@@ -201,13 +210,17 @@ const main = async () => {
 
   if (!IMMEDIATE_DAKA && !retryCount) await delay();
 
+  let session = '';
   try {
-    const { ClockRecordUserId, AttRecordUserId } = await login();
+    getSessionResponse = await getSession();
+    session = getSessionResponse.session;
 
-    const isDakaDay = await checkDakaDay();
+    const { ClockRecordUserId, AttRecordUserId } = await login({ session });
+
+    const isDakaDay = await checkDakaDay({ session });
 
     if (isDakaDay) {
-      await daka({ ClockRecordUserId, AttRecordUserId });
+      await daka({ session, ClockRecordUserId, AttRecordUserId });
     }
     retryCount = 0;
   } catch (e) {
@@ -216,11 +229,11 @@ const main = async () => {
     if (retryCount < MAX_RETRY_COUNT) {
       console.log('Some error happen, retry in 3 secs');
       retryCount += 1;
-      await logout();
+      await logout({ session });
       setTimeout(main, 3000);
     }
   }
-  logout();
+  logout({ session });
   console.log('===== end =====');
 };
 
