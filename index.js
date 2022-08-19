@@ -7,8 +7,11 @@ const {
   subMinutes,
 } = require("date-fns");
 
-const { logout, login, checkDakaDay, getSession } = require("./daka.js");
+const { logout, login, checkDakaDay, daka, getSession } = require("./daka.js");
 
+const DOMAIN = process.env.FEMAS_DOMAIN;
+const USER_NAME = process.env.FEMAS_USERNAME;
+const USER_PASSWORD = process.env.FEMAS_PASSWORD;
 const IMMEDIATE_DAKA = process.env.IMMEDIATE_DAKA || false;
 const DELAY_START_MINS = process.env.DELAY_START_MINS || 5;
 const DELAY_END_MINS = process.env.DELAY_END_MINS || 15;
@@ -55,15 +58,25 @@ const main = async () => {
   let session = "";
 
   try {
-    getSessionResponse = await getSession();
+    getSessionResponse = await getSession({ domain: DOMAIN });
     session = getSessionResponse.session;
 
-    const { ClockRecordUserId, AttRecordUserId } = await login({ session });
+    const { ClockRecordUserId, AttRecordUserId } = await login({
+      session,
+      domain: DOMAIN,
+      username: USER_NAME,
+      password: USER_PASSWORD,
+    });
 
-    const isDakaDay = await checkDakaDay();
+    const isDakaDay = await checkDakaDay({ domain: DOMAIN });
 
     if (isDakaDay) {
-      await daka({ session, ClockRecordUserId, AttRecordUserId });
+      await daka({
+        session,
+        domain: DOMAIN,
+        ClockRecordUserId,
+        AttRecordUserId,
+      });
     }
     retryCount = 0;
   } catch (e) {
@@ -72,11 +85,11 @@ const main = async () => {
     if (retryCount < MAX_RETRY_COUNT) {
       console.log("Some error happen, retry in 3 secs");
       retryCount += 1;
-      await logout({ session });
+      await logout({ session, domain: DOMAIN });
       setTimeout(main, 3000);
     }
   }
-  logout({ session });
+  logout({ session, domain: DOMAIN });
   console.log("===== end =====");
 };
 
