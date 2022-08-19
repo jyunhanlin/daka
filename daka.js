@@ -1,4 +1,3 @@
-require("dotenv").config();
 require("cross-fetch/polyfill");
 
 const {
