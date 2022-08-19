@@ -68,7 +68,7 @@ const main = async () => {
       password: USER_PASSWORD,
     });
 
-    const isDakaDay = await checkDakaDay({ domain: DOMAIN });
+    const isDakaDay = await checkDakaDay({ session, domain: DOMAIN });
 
     if (isDakaDay) {
       await daka({

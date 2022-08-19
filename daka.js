@@ -27,7 +27,7 @@ const UTC_TODAY = new Date();
 const TODAY = getCSTDate(UTC_TODAY);
 const HOUR = TODAY.getUTCHours();
 
-const getSession = async ({ domain}) => {
+const getSession = async ({ domain }) => {
   let session = "";
   const getCookieResponse = await fetch(`https://femascloud.com/${domain}/`);
 
@@ -36,6 +36,12 @@ const getSession = async ({ domain}) => {
     .split(";")
     .filter((cookie) => cookie.includes("swag="))
     .map((cookie) => cookie.replace(/.*swag=/, ""));
+
+  // use last one cookie
+  session = sessions.length ? sessions[sessions.length - 1] : session;
+
+  return { session };
+};
 
 const login = async ({ session, domain, username, password }) => {
   const loginData = new URLSearchParams();
@@ -130,7 +136,12 @@ const checkDakaDay = async ({ session, domain }) => {
   return shouldDakaToday;
 };
 
-const daka = async ({ session, domain, ClockRecordUserId, AttRecordUserId }) => {
+const daka = async ({
+  session,
+  domain,
+  ClockRecordUserId,
+  AttRecordUserId,
+}) => {
   const dakaData = new URLSearchParams();
 
   const clockType = HOUR >= 12 ? "E" : "S";
