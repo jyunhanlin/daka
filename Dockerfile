@@ -25,7 +25,8 @@ COPY package.json package-lock.json ./
 RUN npm install
 
 COPY daka.js ./
+COPY index.js ./
 
-RUN echo "0 2,11 * * * /usr/local/bin/node /app/daka.js" > /var/spool/cron/crontabs/root
+RUN echo "0 2,11 * * * /usr/local/bin/node /app/index.js" > /var/spool/cron/crontabs/root
 
 ENTRYPOINT ["/sbin/tini", "--", "crond", "-f"]
