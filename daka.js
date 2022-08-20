@@ -1,7 +1,12 @@
 require('dotenv').config();
 require('cross-fetch/polyfill');
 
-const { startOfMonth, endOfMonth, eachDayOfInterval, subMinutes } = require('date-fns');
+const {
+  startOfMonth,
+  endOfMonth,
+  eachDayOfInterval,
+  subMinutes,
+} = require('date-fns');
 
 const DOMAIN = process.env.FEMAS_DOMAIN;
 const USER_NAME = process.env.FEMAS_USERNAME;
@@ -15,7 +20,12 @@ const CST_TIMEZONE_OFFSET = -480;
 const SESSION_LIFE_TIME = Math.floor(new Date().getTime() / 1000) + 1800; // copy from femas javascript
 
 const getCSTDate = (date) =>
-  subMinutes(date, date.getTimezoneOffset() !== 0 ? date.getTimezoneOffset() : CST_TIMEZONE_OFFSET);
+  subMinutes(
+    date,
+    date.getTimezoneOffset() !== 0
+      ? date.getTimezoneOffset()
+      : CST_TIMEZONE_OFFSET
+  );
 
 const format = (date) => {
   return date.toISOString().split('T')[0];
@@ -48,14 +58,17 @@ const login = async ({ session }) => {
   loginData.append('data[Account][passwd]', USER_PASSWORD);
   loginData.append('data[remember]', 0);
 
-  const postLoginResponse = await fetch(`https://femascloud.com/${DOMAIN}/Accounts/login`, {
-    headers: {
-      'content-type': 'application/x-www-form-urlencoded',
-      cookie: `${DOMAIN}=${session}`,
-    },
-    body: loginData,
-    method: 'POST',
-  });
+  const postLoginResponse = await fetch(
+    `https://femascloud.com/${DOMAIN}/Accounts/login`,
+    {
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded',
+        cookie: `${DOMAIN}=${session}`,
+      },
+      body: loginData,
+      method: 'POST',
+    }
+  );
 
   const html = await postLoginResponse.text();
 
@@ -146,16 +159,19 @@ const daka = async ({ session, ClockRecordUserId, AttRecordUserId }) => {
   dakaData.append('data[ClockRecord][latitude]', '');
   dakaData.append('data[ClockRecord][longitude]', '');
 
-  const dakaResponse = await fetch(`https://femascloud.com/${DOMAIN}/users/clock_listing`, {
-    headers: {
-      'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-      'x-requested-with': 'XMLHttpRequest',
-      cookie: `${DOMAIN}=${session};  lifeTimePoint${DOMAIN}=${SESSION_LIFE_TIME}`,
-      Referer: `https://femascloud.com/${DOMAIN}/users/main?from=/Accounts/login?ext=html`,
-    },
-    body: dakaData,
-    method: 'POST',
-  });
+  const dakaResponse = await fetch(
+    `https://femascloud.com/${DOMAIN}/users/clock_listing`,
+    {
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'x-requested-with': 'XMLHttpRequest',
+        cookie: `${DOMAIN}=${session};  lifeTimePoint${DOMAIN}=${SESSION_LIFE_TIME}`,
+        Referer: `https://femascloud.com/${DOMAIN}/users/main?from=/Accounts/login?ext=html`,
+      },
+      body: dakaData,
+      method: 'POST',
+    }
+  );
 
   const html = await dakaResponse.text();
 
