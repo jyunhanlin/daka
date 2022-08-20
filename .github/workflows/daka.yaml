@@ -2,7 +2,7 @@ name: Daka
 
 on:
   schedule:
-    - cron: "0 0,11 * * *"
+    - cron: '0 0,11 * * *'
 
 jobs:
   daka:
@@ -15,8 +15,8 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "16"
-          cache: "npm"
+          node-version: '16'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm install
@@ -51,7 +51,7 @@ jobs:
         uses: nanzm/get-time-action@v1.1
         with:
           timeZone: 8
-          format: "YYYY-MM-DD HH:mm"
+          format: 'YYYY-MM-DD HH:mm'
 
       - name: Create issue from file
         uses: peter-evans/create-issue-from-file@v4
@@ -62,7 +62,7 @@ jobs:
       - name: Close issue while stale
         uses: actions/stale@v5
         with:
-          stale-issue-message: "Close stale issue"
+          stale-issue-message: 'Close stale issue'
           days-before-issue-stale: 1
           days-before-issue-close: 0
           days-before-pr-stale: -1
