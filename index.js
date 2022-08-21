@@ -1,13 +1,8 @@
-require("dotenv").config();
-require("cross-fetch/polyfill");
-const {
-  startOfMonth,
-  endOfMonth,
-  eachDayOfInterval,
-  subMinutes,
-} = require("date-fns");
+require('dotenv').config();
+require('cross-fetch/polyfill');
+const { subMinutes } = require('date-fns');
 
-const { logout, login, checkDakaDay, daka, getSession } = require("./daka.js");
+const { logout, login, checkDakaDay, daka, getSession } = require('./daka.js');
 
 const DOMAIN = process.env.FEMAS_DOMAIN;
 const USER_NAME = process.env.FEMAS_USERNAME;
@@ -16,6 +11,8 @@ const IMMEDIATE_DAKA = process.env.IMMEDIATE_DAKA || false;
 const DELAY_START_MINS = process.env.DELAY_START_MINS || 5;
 const DELAY_END_MINS = process.env.DELAY_END_MINS || 15;
 const MAX_RETRY_COUNT = process.env.MAX_RETRY_COUNT || 3;
+
+const CST_TIMEZONE_OFFSET = -480;
 
 const getCSTDate = (date) =>
   subMinutes(
@@ -51,11 +48,11 @@ const delay = () => {
 };
 
 const main = async () => {
-  console.log("===== start =====");
+  console.log('===== start =====');
 
   if (!IMMEDIATE_DAKA && !retryCount) await delay();
 
-  let session = "";
+  let session = '';
 
   try {
     getSessionResponse = await getSession({ domain: DOMAIN });
@@ -80,17 +77,17 @@ const main = async () => {
     }
     retryCount = 0;
   } catch (e) {
-    console.log("Error:", e);
+    console.log('Error:', e);
 
     if (retryCount < MAX_RETRY_COUNT) {
-      console.log("Some error happen, retry in 3 secs");
+      console.log('Some error happen, retry in 3 secs');
       retryCount += 1;
       await logout({ session, domain: DOMAIN });
       setTimeout(main, 3000);
     }
   }
   logout({ session, domain: DOMAIN });
-  console.log("===== end =====");
+  console.log('===== end =====');
 };
 
 main();
