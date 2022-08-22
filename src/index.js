@@ -1,51 +1,17 @@
 require('dotenv').config();
 require('cross-fetch/polyfill');
-const { subMinutes } = require('date-fns');
 
 const { logout, login, checkDakaDay, daka, getSession } = require('./daka.js');
-
-const DOMAIN = process.env.FEMAS_DOMAIN;
-const USER_NAME = process.env.FEMAS_USERNAME;
-const USER_PASSWORD = process.env.FEMAS_PASSWORD;
-const IMMEDIATE_DAKA = process.env.IMMEDIATE_DAKA || false;
-const DELAY_START_MINS = process.env.DELAY_START_MINS || 5;
-const DELAY_END_MINS = process.env.DELAY_END_MINS || 15;
-const MAX_RETRY_COUNT = process.env.MAX_RETRY_COUNT || 3;
-
-const CST_TIMEZONE_OFFSET = -480;
-
-const getCSTDate = (date) =>
-  subMinutes(
-    date,
-    date.getTimezoneOffset() !== 0
-      ? date.getTimezoneOffset()
-      : CST_TIMEZONE_OFFSET
-  );
-
-const UTC_TODAY = new Date();
-const TODAY = getCSTDate(UTC_TODAY);
-const HOUR = TODAY.getUTCHours();
-
-const getRandomMinute = (min, max) => {
-  const minMinute = min * 60;
-  const maxMinute = max * 60;
-  return Math.floor(Math.random() * (maxMinute - minMinute + 1)) + minMinute;
-};
+const {
+  DOMAIN,
+  USER_NAME,
+  USER_PASSWORD,
+  IMMEDIATE_DAKA,
+  MAX_RETRY_COUNT,
+} = require('./constants.js');
+const { delay } = require('./utils.js');
 
 let retryCount = 0;
-
-const delay = () => {
-  const delay =
-    HOUR >= 12
-      ? getRandomMinute(DELAY_START_MINS, DELAY_END_MINS)
-      : getRandomMinute(0, DELAY_START_MINS);
-
-  console.log(`daka delay ${delay / 60} mins`);
-
-  return new Promise((resolve) => {
-    setTimeout(resolve, delay * 1000);
-  });
-};
 
 const main = async () => {
   console.log('===== start =====');
@@ -90,4 +56,7 @@ const main = async () => {
   console.log('===== end =====');
 };
 
-main();
+if (!DOMAIN || !USER_NAME || !USER_PASSWORD) {
+  console.log('Please set the required env variables');
+  process.exit(1);
+} else main();

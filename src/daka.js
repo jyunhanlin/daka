@@ -1,30 +1,9 @@
 require('cross-fetch/polyfill');
 
-const {
-  startOfMonth,
-  endOfMonth,
-  eachDayOfInterval,
-  subMinutes,
-} = require('date-fns');
+const { startOfMonth, endOfMonth, eachDayOfInterval } = require('date-fns');
 
-const CST_TIMEZONE_OFFSET = -480;
-const SESSION_LIFE_TIME = Math.floor(new Date().getTime() / 1000) + 1800; // copy from femas javascript
-
-const getCSTDate = (date) =>
-  subMinutes(
-    date,
-    date.getTimezoneOffset() !== 0
-      ? date.getTimezoneOffset()
-      : CST_TIMEZONE_OFFSET
-  );
-
-const format = (date) => {
-  return date.toISOString().split('T')[0];
-};
-
-const UTC_TODAY = new Date();
-const TODAY = getCSTDate(UTC_TODAY);
-const HOUR = TODAY.getUTCHours();
+const { SESSION_LIFE_TIME } = require('./constants.js');
+const { getCSTDate, format, TODAY, HOUR } = require('./utils.js');
 
 const getSession = async ({ domain }) => {
   let session = '';
