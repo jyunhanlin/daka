@@ -2,8 +2,13 @@ require('cross-fetch/polyfill');
 
 const { startOfMonth, endOfMonth, eachDayOfInterval } = require('date-fns');
 
-const { SESSION_LIFE_TIME } = require('./constants.js');
-const { getCSTDate, format, TODAY, HOUR } = require('./utils.js');
+const {
+  getCSTDate,
+  format,
+  SESSION_LIFE_TIME,
+  TODAY,
+  HOUR,
+} = require('./resource');
 
 const getSession = async ({ domain }) => {
   let session = '';

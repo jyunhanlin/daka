@@ -1,11 +1,8 @@
 const { subMinutes } = require('date-fns');
 
-const {
-  DELAY_START_MINS,
-  DELAY_END_MINS,
-  CST_TIMEZONE_OFFSET,
-} = require('./constants.js');
+const { DELAY_START_MINS, DELAY_END_MINS } = require('./env.js');
 
+const CST_TIMEZONE_OFFSET = -480;
 const getCSTDate = (date) =>
   subMinutes(
     date,
@@ -28,6 +25,8 @@ const UTC_TODAY = new Date();
 const TODAY = getCSTDate(UTC_TODAY);
 const HOUR = TODAY.getUTCHours();
 
+const SESSION_LIFE_TIME = Math.floor(TODAY.getTime() / 1000) + 1800; // copy from femas javascript
+
 const delay = () => {
   const delayMinutes =
     HOUR >= 12
@@ -42,11 +41,13 @@ const delay = () => {
 };
 
 module.exports = {
+  CST_TIMEZONE_OFFSET,
+  SESSION_LIFE_TIME,
+  UTC_TODAY,
+  TODAY,
+  HOUR,
   getCSTDate,
   format,
   getRandomMinute,
   delay,
-  UTC_TODAY,
-  TODAY,
-  HOUR,
 };

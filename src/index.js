@@ -8,8 +8,8 @@ const {
   USER_PASSWORD,
   IMMEDIATE_DAKA,
   MAX_RETRY_COUNT,
-} = require('./constants.js');
-const { delay } = require('./utils.js');
+} = require('./env.js');
+const { delay } = require('./resource.js');
 
 let retryCount = 0;
 
