@@ -24,7 +24,7 @@ npm install
 ```bash
 crontab -e
 
-0 10,19 * * * /NODE_PATH/node /DAKA_FOLDER/daka.js >>/LOG_FOLDER/daka.log 2>&1
+0 10,19 * * * /NODE_PATH/node /DAKA_FOLDER/src/index.js >>/LOG_FOLDER/daka.log 2>&1
 ```
 
 ### Github Actions

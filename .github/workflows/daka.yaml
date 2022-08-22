@@ -24,7 +24,7 @@ jobs:
       - name: Let's Daka
         id: daka
         run: |
-          result=$(node index.js)
+          result=$(node src/index.js)
           echo "$result" > result.md
 
           if [[ $result == *"daka success"* ]]; then
