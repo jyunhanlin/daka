@@ -8,17 +8,19 @@ const {
   SESSION_LIFE_TIME,
   TODAY,
   HOUR,
-} = require('./resource');
+} = require('./resource.js');
 
 const getSession = async ({ domain }) => {
   let session = '';
   const getCookieResponse = await fetch(`https://femascloud.com/${domain}/`);
 
-  const sessions = getCookieResponse.headers
+  let sessions = getCookieResponse.headers
     .get('set-cookie')
     .split(';')
-    .filter((cookie) => cookie.includes('swag='))
+    .filter((cookie) => cookie.match(/swag=(?!deleted)/))
     .map((cookie) => cookie.replace(/.*swag=/, ''));
+
+  sessions = [...new Set(sessions)];
 
   // use last one cookie
   session = sessions.length ? sessions[sessions.length - 1] : session;
