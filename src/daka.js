@@ -10,25 +10,7 @@ const {
   HOUR,
 } = require('./resource.js');
 
-const getSession = async ({ domain }) => {
-  let session = '';
-  const getCookieResponse = await fetch(`https://femascloud.com/${domain}/`);
-
-  let sessions = getCookieResponse.headers
-    .get('set-cookie')
-    .split(';')
-    .filter((cookie) => cookie.match(/swag=(?!deleted)/))
-    .map((cookie) => cookie.replace(/.*swag=/, ''));
-
-  sessions = [...new Set(sessions)];
-
-  // use last one cookie
-  session = sessions.length ? sessions[sessions.length - 1] : session;
-
-  return { session };
-};
-
-const login = async ({ session, domain, username, password }) => {
+const _login = async ({ session, domain, username, password }) => {
   const loginData = new URLSearchParams();
 
   loginData.append('data[Account][username]', username);
@@ -62,6 +44,56 @@ const login = async ({ session, domain, username, password }) => {
   }
 
   return { ClockRecordUserId, AttRecordUserId };
+};
+
+const login = async ({ domain, username, password }) => {
+  let session = '';
+  let ClockRecordUserId = '';
+  let AttRecordUserId = '';
+  const getCookieResponse = await fetch(`https://femascloud.com/${domain}/`);
+
+  let sessions = getCookieResponse.headers
+    .get('set-cookie')
+    .split(';')
+    .filter((cookie) => cookie.match(/swag=(?!deleted)/))
+    .map((cookie) => cookie.replace(/.*swag=/, ''))
+    .reverse();
+
+  // empty cookie for the last rescue
+  sessions.push('');
+
+  // dedupe
+  sessions = [...new Set(sessions)];
+
+  for (let i = 0; i < sessions.length; i += 1) {
+    try {
+      const response = await _login({
+        session: sessions[i],
+        domain,
+        username,
+        password,
+      });
+
+      if (response.ClockRecordUserId && response.AttRecordUserId) {
+        session = sessions[i];
+        ClockRecordUserId = response.ClockRecordUserId;
+        AttRecordUserId = response.AttRecordUserId;
+        break;
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  if (!ClockRecordUserId || !AttRecordUserId) {
+    throw new Error('login error after try all the sessions');
+  }
+
+  return {
+    session,
+    ClockRecordUserId,
+    AttRecordUserId,
+  };
 };
 
 const checkDakaDay = async ({ session, domain }) => {
@@ -188,5 +220,4 @@ module.exports = {
   logout,
   checkDakaDay,
   daka,
-  getSession,
 };

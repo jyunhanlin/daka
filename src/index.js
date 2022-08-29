@@ -1,7 +1,7 @@
 require('dotenv').config();
 require('cross-fetch/polyfill');
 
-const { logout, login, checkDakaDay, daka, getSession } = require('./daka.js');
+const { logout, login, checkDakaDay, daka } = require('./daka.js');
 const {
   DOMAIN,
   USER_NAME,
@@ -21,15 +21,17 @@ const main = async () => {
   let session = '';
 
   try {
-    getSessionResponse = await getSession({ domain: DOMAIN });
-    session = getSessionResponse.session;
-
-    const { ClockRecordUserId, AttRecordUserId } = await login({
-      session,
+    const {
+      session: sessionFromLogin,
+      ClockRecordUserId,
+      AttRecordUserId,
+    } = await login({
       domain: DOMAIN,
       username: USER_NAME,
       password: USER_PASSWORD,
     });
+
+    session = sessionFromLogin;
 
     const isDakaDay = await checkDakaDay({ session, domain: DOMAIN });
 
@@ -48,11 +50,11 @@ const main = async () => {
     if (retryCount < MAX_RETRY_COUNT) {
       console.log('Some error happen, retry in 3 secs');
       retryCount += 1;
-      await logout({ session, domain: DOMAIN });
+      if (session) await logout({ session, domain: DOMAIN });
       setTimeout(main, 3000);
     }
   }
-  logout({ session, domain: DOMAIN });
+  if (session) logout({ session, domain: DOMAIN });
   console.log('===== end =====');
 };
 
