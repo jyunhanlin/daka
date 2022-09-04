@@ -15,7 +15,7 @@ npm install
 ```
 
 - Copy `example.env` to `.env`
-- Change the env
+- Change the required env variables
   - FEMAS_DOMAIN: the company domain for FEMAS
   - FEMAS_USERNAME: your username for FEMAS
   - FEMAS_PASSWORD: your password for FEMAS
@@ -39,19 +39,23 @@ on:
     - cron: '0 0,11 * * *'
 ```
 
-- Add secrets to Github Actions
+- Add required secrets to Github Actions
   - FEMAS_DOMAIN: the company domain for FEMAS
   - FEMAS_USERNAME: your username for FEMAS
   - FEMAS_PASSWORD: your password for FEMAS
 
 ### Docker
 
-- Pull the image from my Docker Hub or build your own docker image
+- Pull the image from Docker Hub or GitHub packages or build your own docker image
 
 ```bash
 docker pull jyunhanlin/daka:latest
 
 # or
+
+docker pull ghcr.io/jyunhanlin/daka:latest
+
+# or build your own image
 
 docker build -t daka .
 ```
