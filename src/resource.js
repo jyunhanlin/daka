@@ -40,6 +40,8 @@ const delay = () => {
   });
 };
 
+console.log({ UTC_TODAY, TODAY, HOUR });
+
 module.exports = {
   CST_TIMEZONE_OFFSET,
   SESSION_LIFE_TIME,
