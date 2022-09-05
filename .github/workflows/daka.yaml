@@ -38,9 +38,9 @@ jobs:
             echo "::set-output name=result::failed"
           fi
 
-          if [[ $result == *"gogo" ]]; then
+          if [[ $result == *"gogo"* ]]; then
             echo "::set-output name=clock_type::gogo"
-          elif [[ $result == *"bye" ]]; then
+          elif [[ $result == *"bye"* ]]; then
             echo "::set-output name=clock_type::bye"
           fi
         env:
@@ -55,7 +55,7 @@ jobs:
       - name: Create issue from file
         uses: peter-evans/create-issue-from-file@v4
         with:
-          title: Daka ${{ steps.daka.outputs.clock_type }} ${{ steps.daka.outputs.result }}
+          title: Daka ${{ steps.daka.outputs.result }} ${{ steps.daka.outputs.clock_type }}
           content-filepath: ./result.md
 
       - name: Close issue while stale
