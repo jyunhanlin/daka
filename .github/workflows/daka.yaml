@@ -40,7 +40,7 @@ jobs:
 
           if [[ $result == *"gogo" ]]; then
             echo "::set-output name=clock_type::gogo"
-          else if [[ $result == *"bye" ]]; then
+          elif [[ $result == *"bye" ]]; then
             echo "::set-output name=clock_type::bye"
           fi
         env:
