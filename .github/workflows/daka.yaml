@@ -37,6 +37,12 @@ jobs:
             echo "Daka Failed"
             echo "::set-output name=result::failed"
           fi
+
+          if [[ $result == *"gogo" ]]; then
+            echo "::set-output name=clock_type::gogo"
+          else if [[ $result == *"bye" ]]; then
+            echo "::set-output name=clock_type::bye"
+          fi
         env:
           FEMAS_DOMAIN: ${{ secrets.FEMAS_DOMAIN}}
           FEMAS_USERNAME: ${{ secrets.FEMAS_USERNAME }}
@@ -46,17 +52,10 @@ jobs:
           IMMEDIATE_DAKA: ${{ secrets.IMMEDIATE_DAKA }}
           MAX_RETRY_COUNT: ${{ secrets.MAX_RETRY_COUNT }}
 
-      - name: Get time with timezone
-        id: time
-        uses: nanzm/get-time-action@v1.1
-        with:
-          timeZone: 8
-          format: 'YYYY-MM-DD HH:mm'
-
       - name: Create issue from file
         uses: peter-evans/create-issue-from-file@v4
         with:
-          title: Daka ${{ steps.daka.outputs.result }} at ${{ steps.time.outputs.time }}
+          title: Daka ${{ steps.daka.outputs.clock_type }} ${{ steps.daka.outputs.result }}
           content-filepath: ./result.md
 
       - name: Close issue while stale
