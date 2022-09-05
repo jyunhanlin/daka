@@ -33,7 +33,7 @@ const delay = () => {
       ? getRandomMinute(DELAY_START_MINS, DELAY_END_MINS)
       : getRandomMinute(0, DELAY_START_MINS);
 
-  console.log(`daka delay ${delayMinutes / 60} mins`);
+  console.log(`daka delay ${(delayMinutes / 60).toFixed(2)} mins`);
 
   return new Promise((resolve) => {
     setTimeout(resolve, delayMinutes * 1000);
