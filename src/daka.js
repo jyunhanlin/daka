@@ -108,49 +108,52 @@ const checkDakaDay = async ({ session, domain }) => {
       end: new Date(end),
     }).map((day) => format(getCSTDate(day)));
 
-  const [holidaysResponse, personalEventsResponse] = await Promise.all([
-    fetch(
-      `https://femascloud.com/${domain}/Holidays/get_holidays?start=${startDayOfMonth}&end=${lastDayOfMonth}&_=${Date.now()}`,
-      {
-        headers: {
-          cookie: `${domain}=${session};  lifeTimePoint${domain}=${SESSION_LIFE_TIME}`,
-          Referer: `https://femascloud.com/${domain}/Holidays/browse`,
-        },
-        method: 'GET',
-      }
-    ),
-    fetch(
-      `https://femascloud.com/${domain}/Holidays/get_events?start=${startDayOfMonth}&end=${lastDayOfMonth}&_=${Date.now()}`,
-      {
-        headers: {
-          cookie: `${domain}=${session};  lifeTimePoint${domain}=${SESSION_LIFE_TIME}`,
-          Referer: `https://femascloud.com/${domain}/Holidays/browse`,
-        },
-        method: 'GET',
-      }
-    ),
-  ]);
+  const holidaysResponse = await fetch(
+    `https://femascloud.com/${domain}/Holidays/get_holidays?start=${startDayOfMonth}&end=${lastDayOfMonth}&_=${Date.now()}`,
+    {
+      headers: {
+        cookie: `${domain}=${session};  lifeTimePoint${domain}=${SESSION_LIFE_TIME}`,
+        Referer: `https://femascloud.com/${domain}/Holidays/browse`,
+      },
+      method: 'GET',
+    }
+  );
 
-  const [holidays, personalEvents] = await Promise.all([
-    holidaysResponse.json(),
-    personalEventsResponse.json(),
-  ]);
+  let holidays = await holidaysResponse.json();
+  holidays = holidays.map((holiday) => holiday.start);
 
-  const shouldNotDakaDays = [
-    ...holidays.map((holiday) => holiday.start),
-    ...personalEvents.reduce((acc, cur) => {
-      const start = cur.origStart.split(' ')[0];
-      const end = cur.origEnd.split(' ')[0];
+  if (holidays.includes(dakaDay)) {
+    console.log(dakaDay, "It's holiday, not daka");
+    return false;
+  }
 
-      return [...acc, ...getDaysArray(start, end)];
-    }, []),
-  ];
+  const personalEventsResponse = await fetch(
+    `https://femascloud.com/${domain}/Holidays/get_events?start=${startDayOfMonth}&end=${lastDayOfMonth}&_=${Date.now()}`,
+    {
+      headers: {
+        cookie: `${domain}=${session};  lifeTimePoint${domain}=${SESSION_LIFE_TIME}`,
+        Referer: `https://femascloud.com/${domain}/Holidays/browse`,
+      },
+      method: 'GET',
+    }
+  );
 
-  const shouldDakaToday = !shouldNotDakaDays.includes(dakaDay);
+  let personalEvents = await personalEventsResponse.json();
+  personalEvents = personalEvents.reduce((acc, cur) => {
+    const start = cur.origStart.split(' ')[0];
+    const end = cur.origEnd.split(' ')[0];
 
-  console.log(dakaDay, shouldDakaToday ? 'daka' : 'not daka');
+    return [...acc, ...getDaysArray(start, end)];
+  }, []);
 
-  return shouldDakaToday;
+  if (personalEvents.includes(dakaDay)) {
+    console.log(dakaDay, "It's day off, not daka");
+    return false;
+  }
+
+  console.log(dakaDay, 'daka');
+
+  return true;
 };
 
 const daka = async ({
