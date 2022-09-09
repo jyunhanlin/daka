@@ -46,10 +46,14 @@ on:
 
 ### Docker
 
-- Pull the image from Docker Hub or build your own docker image
+- Pull the image from Docker Hub or GitHub packages or build your own docker image
 
 ```bash
 docker pull jyunhanlin/daka:latest
+
+# or
+
+docker pull ghcr.io/jyunhanlin/daka:latest
 
 # or build your own image
 
