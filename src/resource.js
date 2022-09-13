@@ -27,9 +27,9 @@ const TODAY = getCSTDate(UTC_TODAY);
 const HOUR = TODAY.getUTCHours();
 const SESSION_LIFE_TIME = Math.floor(TODAY.getTime() / 1000) + 1800; // copy from femas javascript
 
-const delay = () => {
+const delay = ({ clockType }) => {
   const delayMinutes =
-    HOUR >= 12
+    clockType === 'E'
       ? getRandomMinute(DELAY_START_MINS, DELAY_END_MINS)
       : getRandomMinute(0, DELAY_START_MINS);
 

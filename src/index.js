@@ -9,14 +9,15 @@ const {
   IMMEDIATE_DAKA,
   MAX_RETRY_COUNT,
 } = require('./env.js');
-const { delay } = require('./resource.js');
+const { delay, HOUR } = require('./resource.js');
 
+let clockType = HOUR >= 12 ? 'E' : 'S'; // default clockType
 let retryCount = 0;
 
 const main = async () => {
   console.log('===== start =====');
 
-  if (!IMMEDIATE_DAKA && !retryCount) await delay();
+  if (!IMMEDIATE_DAKA && !retryCount) await delay({ clockType });
 
   let session = '';
 
@@ -37,6 +38,7 @@ const main = async () => {
 
     if (isDakaDay) {
       await daka({
+        clockType,
         session,
         domain: DOMAIN,
         ClockRecordUserId,
@@ -61,4 +63,7 @@ const main = async () => {
 if (!DOMAIN || !USER_NAME || !USER_PASSWORD) {
   console.log('Please set the required env variables');
   process.exit(1);
-} else main();
+} else {
+  if (process.argv[2]) clockType = process.argv[2];
+  main();
+}
