@@ -24,7 +24,8 @@ npm install
 ```bash
 crontab -e
 
-0 10,19 * * * /NODE_PATH/node /DAKA_FOLDER/src/index.js >>/LOG_FOLDER/daka.log 2>&1
+0 10 * * * /NODE_PATH/node /DAKA_FOLDER/src/index.js S >>/LOG_FOLDER/daka.log 2>&1
+0 19 * * * /NODE_PATH/node /DAKA_FOLDER/src/index.js E >>/LOG_FOLDER/daka.log 2>&1
 ```
 
 ### Github Actions
@@ -36,7 +37,8 @@ crontab -e
 ```yaml
 on:
   schedule:
-    - cron: '0 0,11 * * *'
+    - cron: '0 0 * * *'
+    - cron: '0 11 * * *'
 ```
 
 - Add required secrets to Github Actions

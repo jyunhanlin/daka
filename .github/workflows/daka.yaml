@@ -2,11 +2,21 @@ name: Daka
 
 on:
   schedule:
-    - cron: '0 0,11 * * *'
+    - cron: '0 0 * * *'
+    - cron: '0 11 * * *'
 
 jobs:
   daka:
     runs-on: ubuntu-latest
+
+    env:
+      FEMAS_DOMAIN: ${{ secrets.FEMAS_DOMAIN}}
+      FEMAS_USERNAME: ${{ secrets.FEMAS_USERNAME }}
+      FEMAS_PASSWORD: ${{ secrets.FEMAS_PASSWORD }}
+      DELAY_START_MINS: ${{ secrets.DELAY_START_MINS }}
+      DELAY_END_MINS: ${{ secrets.DELAY_END_MINS }}
+      IMMEDIATE_DAKA: ${{ secrets.IMMEDIATE_DAKA }}
+      MAX_RETRY_COUNT: ${{ secrets.MAX_RETRY_COUNT }}
 
     steps:
       - name: Checkout
@@ -21,11 +31,18 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Let's Daka
+      - name: Daka gogo
+        if: github.event.schedule == '0 0 * * *'
+        run: node src/index.js S > result.md
+
+      - name: Daka bye
+        if: github.event.schedule == '0 11 * * *'
+        run: node src/index.js E > result.md
+
+      - name: Get the Daka meta
         id: daka
         run: |
-          result=$(node src/index.js)
-          echo "$result" > result.md
+          result=`cat ./result.md`
 
           if [[ $result == *"daka success"* ]]; then
             echo "Daka Success"
@@ -43,14 +60,6 @@ jobs:
           elif [[ $result == *"bye"* ]]; then
             echo "::set-output name=clock_type::bye"
           fi
-        env:
-          FEMAS_DOMAIN: ${{ secrets.FEMAS_DOMAIN}}
-          FEMAS_USERNAME: ${{ secrets.FEMAS_USERNAME }}
-          FEMAS_PASSWORD: ${{ secrets.FEMAS_PASSWORD }}
-          DELAY_START_MINS: ${{ secrets.DELAY_START_MINS }}
-          DELAY_END_MINS: ${{ secrets.DELAY_END_MINS }}
-          IMMEDIATE_DAKA: ${{ secrets.IMMEDIATE_DAKA }}
-          MAX_RETRY_COUNT: ${{ secrets.MAX_RETRY_COUNT }}
 
       - name: Create issue from file
         uses: peter-evans/create-issue-from-file@v4

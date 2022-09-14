@@ -28,6 +28,7 @@ RUN npm install
 
 COPY src/ src/
 
-RUN echo "0 2,11 * * * /usr/local/bin/node /app/src/index.js" > /var/spool/cron/crontabs/root
+RUN echo "0 2 * * * /usr/local/bin/node /app/src/index.js S" > /var/spool/cron/crontabs/root
+RUN echo "0 11 * * * /usr/local/bin/node /app/src/index.js E" >> /var/spool/cron/crontabs/root
 
 ENTRYPOINT ["/sbin/tini", "--", "crond", "-f"]

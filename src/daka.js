@@ -7,7 +7,6 @@ const {
   format,
   SESSION_LIFE_TIME,
   TODAY,
-  HOUR,
 } = require('./resource.js');
 
 const _login = async ({ session, domain, username, password }) => {
@@ -157,16 +156,15 @@ const checkDakaDay = async ({ session, domain }) => {
 };
 
 const daka = async ({
+  clockType,
   session,
   domain,
   ClockRecordUserId,
   AttRecordUserId,
 }) => {
-  const dakaData = new URLSearchParams();
-
-  const clockType = HOUR >= 12 ? 'E' : 'S';
   console.log(clockType === 'E' ? 'bye' : 'gogo');
 
+  const dakaData = new URLSearchParams();
   dakaData.append('_method', 'POST');
   dakaData.append('data[ClockRecord][user_id]', ClockRecordUserId);
   dakaData.append('data[AttRecord][user_id]', AttRecordUserId);
