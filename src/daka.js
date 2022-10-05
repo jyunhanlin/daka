@@ -137,8 +137,7 @@ const checkDakaDay = async ({ session, domain }) => {
     }
   );
 
-  let personalEvents = await personalEventsResponse.json();
-  console.log('personalEvents', personalEvents);
+  let personalEvents = (await personalEventsResponse.json()) || [];
   personalEvents = personalEvents.reduce((acc, cur) => {
     const start = cur.origStart.split(' ')[0];
     const end = cur.origEnd.split(' ')[0];
