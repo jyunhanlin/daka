@@ -118,7 +118,7 @@ const checkDakaDay = async ({ session, domain }) => {
     }
   );
 
-  let holidays = await holidaysResponse.json();
+  let holidays = (await holidaysResponse.json()) || [];
   holidays = holidays.map((holiday) => holiday.start);
 
   if (holidays.includes(dakaDay)) {
