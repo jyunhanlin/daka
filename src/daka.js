@@ -96,8 +96,8 @@ const login = async ({ domain, username, password }) => {
 };
 
 const checkDakaDay = async ({ session, domain }) => {
-  const startDayOfMonth = format(startOfMonth(TODAY));
-  const lastDayOfMonth = format(endOfMonth(TODAY));
+  const startDayOfMonth = format(getCSTDate(startOfMonth(TODAY)));
+  const lastDayOfMonth = format(getCSTDate(endOfMonth(TODAY)));
 
   const dakaDay = format(TODAY);
 
