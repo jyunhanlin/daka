@@ -1,4 +1,4 @@
-const { subMinutes } = require('date-fns');
+const { subMinutes, eachDayOfInterval } = require('date-fns');
 
 const { DELAY_START_MINS, DELAY_END_MINS } = require('./env.js');
 
@@ -11,6 +11,12 @@ const getCSTDate = (date) =>
       ? date.getTimezoneOffset()
       : CST_TIMEZONE_OFFSET
   );
+
+const getDaysArray = (start, end) =>
+  eachDayOfInterval({
+    start: new Date(start),
+    end: new Date(end),
+  }).map((day) => format(getCSTDate(day)));
 
 const format = (date) => {
   return date.toISOString().split('T')[0];
@@ -48,6 +54,7 @@ module.exports = {
   TODAY,
   HOUR,
   getCSTDate,
+  getDaysArray,
   format,
   getRandomMinute,
   delay,

@@ -1,9 +1,10 @@
 require('cross-fetch/polyfill');
 
-const { startOfMonth, endOfMonth, eachDayOfInterval } = require('date-fns');
+const { startOfMonth, endOfMonth } = require('date-fns');
 
 const {
   getCSTDate,
+  getDaysArray,
   format,
   SESSION_LIFE_TIME,
   TODAY,
@@ -100,12 +101,6 @@ const checkDakaDay = async ({ session, domain }) => {
   const lastDayOfMonth = format(getCSTDate(endOfMonth(TODAY)));
 
   const dakaDay = format(TODAY);
-
-  const getDaysArray = (start, end) =>
-    eachDayOfInterval({
-      start: new Date(start),
-      end: new Date(end),
-    }).map((day) => format(getCSTDate(day)));
 
   const holidaysResponse = await fetch(
     `https://femascloud.com/${domain}/Holidays/get_holidays?start=${startDayOfMonth}&end=${lastDayOfMonth}&_=${Date.now()}`,
