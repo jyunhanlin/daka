@@ -98,8 +98,14 @@ const login = async ({ domain, username, password }) => {
   };
 };
 
-const checkPersonalEvents = ({ events, today, hour, min }) => {
-  const personalEvents = Events.reduce((acc, cur) => {
+const checkPersonalEvents = ({
+  events = [],
+  today = '',
+  hour = '',
+  min = '',
+  clockType = '',
+} = {}) => {
+  const personalEvents = events.reduce((acc, cur) => {
     const start = cur.origStart.split(' ');
     const end = cur.origEnd.split(' ');
 
@@ -176,7 +182,7 @@ const checkPersonalEvents = ({ events, today, hour, min }) => {
   return false;
 };
 
-const checkDakaDay = async ({ session, domain }) => {
+const checkDakaDay = async ({ clockType, session, domain }) => {
   const startDayOfMonth = format(getCSTDate(startOfMonth(TODAY)));
   const lastDayOfMonth = format(getCSTDate(endOfMonth(TODAY)));
 
@@ -220,6 +226,7 @@ const checkDakaDay = async ({ session, domain }) => {
       today: dakaDay,
       hour: HOUR,
       min: MINUTE,
+      clockType,
     })
   ) {
     console.log(dakaDay, "It's day off, not daka");
