@@ -19,7 +19,7 @@ const main = async () => {
 
   if (!IMMEDIATE_DAKA && !retryCount) await delay({ clockType });
 
-  let session = '';
+  let session;
 
   try {
     const {
@@ -52,7 +52,6 @@ const main = async () => {
     if (retryCount < MAX_RETRY_COUNT) {
       console.log('Some error happen, retry in 3 secs');
       retryCount += 1;
-      if (session) await logout({ session, domain: DOMAIN });
       setTimeout(main, 3000);
     }
   }
