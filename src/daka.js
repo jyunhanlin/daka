@@ -160,22 +160,27 @@ const checkPersonalEvents = ({
     const { date, startHour, startMin, endHour, endMin } = personalEvents[i];
 
     if (date === today) {
-      const isAllDay = Number(endHour) - Number(startHour) === 9;
+      // all-day
+      const isAllDay = Number(endHour) - Number(startHour) >= 9;
       if (isAllDay) return true;
 
-      let eventHour = startHour;
-      let eventMin = startMin;
+      // before start or after end
+      if (clockType === 'S') {
+        const timeDiff =
+          (Number(startHour) - Number(hour)) * 60 +
+          (Number(startMin) - Number(min));
 
-      if (clockType === 'E') {
-        eventHour = endHour;
-        eventMin = endMin;
+        if (timeDiff <= 60) return true;
+      } else if (clockType === 'E') {
+        const timeDiff =
+          (Number(hour) - Number(endHour)) * 60 +
+          (Number(min) - Number(endMin));
+
+        if (timeDiff <= 60) return true;
       }
 
-      const timeDiff = Math.abs(
-        (Number(eventHour) - Number(hour)) * 60 +
-          (Number(eventMin) - Number(min))
-      );
-      if (timeDiff <= 60) return true;
+      // between start and end
+      if (startHour <= hour && hour <= endHour) return true;
     }
   }
 

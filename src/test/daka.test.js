@@ -23,7 +23,7 @@ describe('daka -> checkPersonalEvents', () => {
     ).toBe(false);
   });
 
-  it('partial events 1, from 13:00 to 17:00', () => {
+  it('partial events 1, 2022-10-05 from 13:00 to 17:00', () => {
     const events = [testEvents[2]];
 
     expect(
@@ -38,7 +38,7 @@ describe('daka -> checkPersonalEvents', () => {
     expect(
       checkPersonalEvents({
         events,
-        today: '2022-10-303',
+        today: '2022-10-03',
         hour: '19',
         min: '13',
         clockType: 'E',
@@ -65,7 +65,7 @@ describe('daka -> checkPersonalEvents', () => {
     ).toBe(false);
   });
 
-  it('partial events 2, from 14:00 to 19:00', () => {
+  it('partial events 2, 2022-10-17 from 14:00 to 19:00', () => {
     const events = [testEvents[3]];
 
     expect(
@@ -105,9 +105,19 @@ describe('daka -> checkPersonalEvents', () => {
         clockType: 'E',
       })
     ).toBe(true);
+
+    expect(
+      checkPersonalEvents({
+        events,
+        today: '2022-10-17',
+        hour: '18',
+        min: '57',
+        clockType: 'E',
+      })
+    ).toBe(true);
   });
 
-  it('partial events 3, from 10:00 to 15:00', () => {
+  it('partial events 3, 2022-10-21 from 10:00 to 15:00', () => {
     const events = [testEvents[4]];
 
     expect(
@@ -147,6 +157,16 @@ describe('daka -> checkPersonalEvents', () => {
         clockType: 'E',
       })
     ).toBe(false);
+
+    expect(
+      checkPersonalEvents({
+        events,
+        today: '2022-10-21',
+        hour: '10',
+        min: '7',
+        clockType: 'S',
+      })
+    ).toBe(true);
   });
 
   it('an all day event', () => {
@@ -183,7 +203,7 @@ describe('daka -> checkPersonalEvents', () => {
     expect(
       checkPersonalEvents({
         events,
-        today: '2022-10-303',
+        today: '2022-10-03',
         hour: '19',
         min: '13',
         clockType: 'E',
@@ -225,7 +245,7 @@ describe('daka -> checkPersonalEvents', () => {
     expect(
       checkPersonalEvents({
         events,
-        today: '2022-10-303',
+        today: '2022-10-03',
         hour: '19',
         min: '13',
         clockType: 'E',
@@ -248,7 +268,7 @@ describe('daka -> checkPersonalEvents', () => {
     expect(
       checkPersonalEvents({
         events,
-        today: '2022-10-303',
+        today: '2022-10-03',
         hour: '19',
         min: '13',
         clockType: 'E',
