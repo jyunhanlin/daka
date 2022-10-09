@@ -34,7 +34,11 @@ const main = async () => {
 
     session = sessionFromLogin;
 
-    const isDakaDay = await checkDakaDay({ session, domain: DOMAIN });
+    const isDakaDay = await checkDakaDay({
+      clockType,
+      session,
+      domain: DOMAIN,
+    });
 
     if (isDakaDay) {
       await daka({

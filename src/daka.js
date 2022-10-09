@@ -8,6 +8,8 @@ const {
   format,
   SESSION_LIFE_TIME,
   TODAY,
+  HOUR,
+  MINUTE,
 } = require('./resource.js');
 
 const _login = async ({ session, domain, username, password }) => {
@@ -96,7 +98,96 @@ const login = async ({ domain, username, password }) => {
   };
 };
 
-const checkDakaDay = async ({ session, domain }) => {
+const checkPersonalEvents = ({
+  events = [],
+  today = '',
+  hour = '',
+  min = '',
+  clockType = '',
+} = {}) => {
+  const personalEvents = events.reduce((acc, cur) => {
+    const start = cur.origStart.split(' ');
+    const end = cur.origEnd.split(' ');
+
+    const startDate = start[0];
+    const startTime = start[1].split(':');
+    const startHour = startTime[0];
+    const startMin = startTime[1];
+
+    const endDate = end[0];
+    const endTime = end[1].split(':');
+    const endHour = endTime[0];
+    const endMin = endTime[1];
+
+    let events = [];
+
+    if (startDate === endDate) {
+      events.push({
+        date: startDate,
+        startHour,
+        startMin,
+        endHour,
+        endMin,
+      });
+    } else {
+      const days = getDaysArray(startDate, endDate);
+
+      days.forEach((day) => {
+        let event = {
+          date: day,
+          startHour: '10',
+          startMin: '00',
+          endHour: '19',
+          endMin: '00',
+        };
+
+        if (day === startDate) {
+          event.startHour = startHour;
+          event.startMin = startMin;
+        } else if (day === endDate) {
+          event.endHour = endHour;
+          event.endMin = endMin;
+        }
+
+        events.push(event);
+      });
+    }
+
+    return acc.concat(events);
+  }, []);
+
+  for (let i = 0; i < personalEvents.length; i += 1) {
+    const { date, startHour, startMin, endHour, endMin } = personalEvents[i];
+
+    if (date === today) {
+      // all-day
+      const isAllDay = Number(endHour) - Number(startHour) >= 9;
+      if (isAllDay) return true;
+
+      // before start or after end
+      if (clockType === 'S') {
+        const timeDiff =
+          (Number(startHour) - Number(hour)) * 60 +
+          (Number(startMin) - Number(min));
+
+        if (timeDiff <= 60) return true;
+      } else if (clockType === 'E') {
+        const timeDiff =
+          (Number(hour) - Number(endHour)) * 60 +
+          (Number(min) - Number(endMin));
+
+        if (timeDiff <= 60) return true;
+      }
+
+      // between start and end
+      if (startHour <= hour && hour <= endHour) return true;
+    }
+  }
+
+  return false;
+};
+
+const checkDakaDay = async ({ clockType, session, domain }) => {
   const startDayOfMonth = format(getCSTDate(startOfMonth(TODAY)));
   const lastDayOfMonth = format(getCSTDate(endOfMonth(TODAY)));
 
@@ -133,14 +224,16 @@ const checkDakaDay = async ({ session, domain }) => {
   );
 
   let personalEvents = (await personalEventsResponse.json()) || [];
-  personalEvents = personalEvents.reduce((acc, cur) => {
-    const start = cur.origStart.split(' ')[0];
-    const end = cur.origEnd.split(' ')[0];
 
-    return [...acc, ...getDaysArray(start, end)];
-  }, []);
-
-  if (personalEvents.includes(dakaDay)) {
+  if (
+    checkPersonalEvents({
+      events: personalEvents,
+      today: dakaDay,
+      hour: HOUR,
+      min: MINUTE,
+      clockType,
+    })
+  ) {
     console.log(dakaDay, "It's day off, not daka");
     return false;
   }
@@ -216,4 +309,5 @@ module.exports = {
   logout,
   checkDakaDay,
   daka,
+  checkPersonalEvents, // for testing
 };
