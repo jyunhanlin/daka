@@ -234,7 +234,7 @@ const checkDakaDay = async ({ clockType, session, domain }) => {
       clockType,
     })
   ) {
-    console.log(dakaDay, "It's day off, not daka");
+    console.log(dakaDay, "It's a personal event, not daka");
     return false;
   }
 
