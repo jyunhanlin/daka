@@ -164,6 +164,9 @@ const checkPersonalEvents = ({
       const isAllDay = Number(endHour) - Number(startHour) >= 9;
       if (isAllDay) return true;
 
+      // between start and end
+      if (startHour <= hour && hour <= endHour) return true;
+
       // before start or after end
       if (clockType === 'S') {
         const timeDiff =
@@ -178,9 +181,6 @@ const checkPersonalEvents = ({
 
         if (timeDiff <= 60) return true;
       }
-
-      // between start and end
-      if (startHour <= hour && hour <= endHour) return true;
     }
   }
 
