@@ -67,6 +67,7 @@ if (!DOMAIN || !USER_NAME || !USER_PASSWORD) {
   console.log('Please set the required env variables');
   process.exit(1);
 } else {
-  if (process.argv[2]) clockType = process.argv[2];
+  if (process.argv[2] && ['S', 'E'].includes(process.argv[2]))
+    clockType = process.argv[2];
   main();
 }
