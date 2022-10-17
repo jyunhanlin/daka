@@ -46,19 +46,19 @@ jobs:
 
           if [[ $result == *"daka success"* ]]; then
             echo "Daka Success"
-            echo "::set-output name=result::success"
+            echo "result=success" >> $GITHUB_OUTPUT
           elif [[ $result == *"not daka"* ]]; then
             echo "No Daka"
-            echo "::set-output name=result::no need"
+            echo "result=no need" >> $GITHUB_OUTPUT
           else
             echo "Daka Failed"
-            echo "::set-output name=result::failed"
+            echo "result=failed" >> $GITHUB_OUTPUT
           fi
 
           if [[ $result == *"gogo"* ]]; then
-            echo "::set-output name=clock_type::gogo"
+            echo "clock_type=gogo" >> $GITHUB_OUTPUT
           elif [[ $result == *"bye"* ]]; then
-            echo "::set-output name=clock_type::bye"
+            echo "clock_type=bye" >> $GITHUB_OUTPUT
           fi
 
       - name: Create issue from file
