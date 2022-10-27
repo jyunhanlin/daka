@@ -4,7 +4,7 @@ Check the holidays, and your personal events, then daka!!
 
 ## Usage
 
-Use `Crontab`, `Github Actions`, or `Docker` to run the schedule.
+Use `Crontab`, `GitHub Actions`, or `Docker` to run the schedule.
 
 ### Crontab
 
@@ -28,11 +28,12 @@ crontab -e
 0 19 * * * /NODE_PATH/node /DAKA_FOLDER/src/index.js E >>/LOG_FOLDER/daka.log 2>&1
 ```
 
-### Github Actions
+### GitHub Actions
 
 > [Note](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule): The schedule event may be delayed.
 
-- Modify the schedule you want (Github Actions use UTC time)
+- Modify the schedule you want (GitHub Actions use UTC time)
+- After each daka, GitHub Actions open an issue and then close it immediately. (So an email will be sent to inform the status of daka)
 
 ```yaml
 on:
@@ -41,7 +42,7 @@ on:
     - cron: '0 11 * * *'
 ```
 
-- Add required secrets to Github Actions
+- Add required secrets to GitHub Actions
   - FEMAS_DOMAIN: the company domain for FEMAS
   - FEMAS_USERNAME: your username for FEMAS
   - FEMAS_PASSWORD: your password for FEMAS
