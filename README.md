@@ -38,7 +38,7 @@ crontab -e
 ```yaml
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '30 0 * * *'
     - cron: '0 11 * * *'
 ```
 
