@@ -68,7 +68,7 @@ jobs:
           content-filepath: ./result.md
 
       - name: Close issue while stale
-        uses: actions/stale@v6
+        uses: actions/stale@v7
         with:
           stale-issue-message: 'Close stale issue'
           days-before-issue-stale: 0
