@@ -54,15 +54,18 @@ const login = async ({ domain, username, password }) => {
   let AttRecordUserId = '';
   const getCookieResponse = await fetch(`https://femascloud.com/${domain}/`);
 
-  let sessions = getCookieResponse.headers
-    .get('set-cookie')
-    .split(';')
-    .filter((cookie) => cookie.match(/swag=(?!deleted)/))
-    .map((cookie) => cookie.replace(/.*swag=/, ''))
-    .reverse();
+  let sessions = [];
 
-  // empty cookie for the last rescue
-  sessions.push('');
+  if (getCookieResponse.headers.get('set-cookie')) {
+    getCookieResponse.headers
+      .get('set-cookie')
+      .split(';')
+      .filter((cookie) => cookie.match(/swag=(?!deleted)/))
+      .map((cookie) => cookie.replace(/.*swag=/, ''))
+      .reverse();
+  } else {
+    throw new Error('no cookie, try again');
+  }
 
   // dedupe
   sessions = [...new Set(sessions)];
