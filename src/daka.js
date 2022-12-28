@@ -57,7 +57,7 @@ const login = async ({ domain, username, password }) => {
   let sessions = [];
 
   if (getCookieResponse.headers.get('set-cookie')) {
-    getCookieResponse.headers
+    sessions = getCookieResponse.headers
       .get('set-cookie')
       .split(';')
       .filter((cookie) => cookie.match(/swag=(?!deleted)/))
