@@ -1,5 +1,4 @@
 require('dotenv').config();
-require('cross-fetch/polyfill');
 
 const { logout, login, checkDakaDay, daka } = require('./daka.js');
 const {

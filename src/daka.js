@@ -1,5 +1,3 @@
-require('cross-fetch/polyfill');
-
 const { startOfMonth, endOfMonth } = require('date-fns');
 
 const {
