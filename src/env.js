@@ -1,8 +1,10 @@
-const DOMAIN = process.env.FEMAS_DOMAIN;
-const USER_NAME = process.env.FEMAS_USERNAME;
-const USER_PASSWORD = process.env.FEMAS_PASSWORD;
+const MODULE = process.env.MODULE;
+const USERNAME = process.env.USERNAME;
+const PASSWORD = process.env.PASSWORD;
+const MODULE_OPTIONS = process.env.MODULE_OPTIONS;
+
 const IMMEDIATE_DAKA = process.env.IMMEDIATE_DAKA
-  ? `${process.env.IMMEDIATE_DAKA}`.toLowerCase() !== 'false'
+  ? process.env.IMMEDIATE_DAKA !== '0'
   : false;
 const DELAY_START_MINS = Number.isNaN(Number(process.env.DELAY_START_MINS))
   ? 5
@@ -15,9 +17,10 @@ const MAX_RETRY_COUNT = Number.isNaN(Number(process.env.MAX_RETRY_COUNT))
   : +process.env.MAX_RETRY_COUNT;
 
 module.exports = {
-  DOMAIN,
-  USER_NAME,
-  USER_PASSWORD,
+  MODULE,
+  USERNAME,
+  PASSWORD,
+  MODULE_OPTIONS,
   IMMEDIATE_DAKA,
   DELAY_START_MINS,
   DELAY_END_MINS,
