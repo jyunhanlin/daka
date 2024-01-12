@@ -45,6 +45,9 @@ const delay = ({ punchType, delayStartMins, delayEndMins }) => {
   });
 };
 
+const parseCookies = (setCookie) =>
+  setCookie.map((cookie) => `${cookie.split(';')[0]};`).join('');
+
 module.exports = {
   CST_TIMEZONE_OFFSET,
   SESSION_LIFE_TIME,
@@ -57,4 +60,5 @@ module.exports = {
   format,
   getRandomMinute,
   delay,
+  parseCookies,
 };
