@@ -144,6 +144,7 @@ class MayoModule {
 
     const { Meta } = result;
 
+    // TODO, wait for mins from result
     if (Meta?.HttpStatusCode !== '200')
       throw new Error(`daka punch failed, ${JSON.stringify(result)}`);
   }
