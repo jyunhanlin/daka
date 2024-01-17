@@ -15,7 +15,7 @@ class Daka {
   }
 
   logout() {
-    this.dakaModule.logout();
+    return this.dakaModule.logout();
   }
 
   checkDakaDay() {
@@ -28,10 +28,18 @@ class Daka {
 
       const isDakaDay = await this.checkDakaDay();
 
-      if (isDakaDay) this.dakaModule.punch({ punchType });
-    } catch (e) {}
+      await this.dakaModule.punch({ punchType: this.punchType });
+    } catch (e) {
+      console.log('Error:', e);
 
-    this.logout();
+      if (retryCount < MAX_RETRY_COUNT) {
+        console.log('Some error happen, retry in 3 secs');
+        retryCount += 1;
+        setTimeout(this.punch, 3000);
+      }
+    }
+
+    await this.logout();
   }
 }
 

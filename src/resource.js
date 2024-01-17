@@ -30,7 +30,6 @@ const UTC_TODAY = new Date();
 const TODAY = getCSTDate(UTC_TODAY);
 const HOUR = TODAY.getUTCHours();
 const MINUTE = TODAY.getUTCMinutes();
-const SESSION_LIFE_TIME = Math.floor(TODAY.getTime() / 1000) + 1800; // copy from femas javascript
 
 const delay = ({ punchType, delayStartMins, delayEndMins }) => {
   const delayMins =
@@ -50,7 +49,6 @@ const parseCookies = (setCookie) =>
 
 module.exports = {
   CST_TIMEZONE_OFFSET,
-  SESSION_LIFE_TIME,
   UTC_TODAY,
   TODAY,
   HOUR,

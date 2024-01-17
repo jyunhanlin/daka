@@ -4,11 +4,12 @@ const {
   getCSTDate,
   getDaysArray,
   format,
-  SESSION_LIFE_TIME,
   TODAY,
   HOUR,
   MINUTE,
-} = require('./resource.js');
+} = require('../resource.js');
+
+const SESSION_LIFE_TIME = Math.floor(TODAY.getTime() / 1000) + 1800; // copy from femas javascript
 
 class FemasModule {
   async _login() {
@@ -306,9 +307,7 @@ class FemasModule {
     console.log(`daka success, time: ${dakaTime}`);
   }
 
-  punchIn() {}
-
-  punchOut() {}
+  punch() {}
 }
 
 module.exports = FemasModule;

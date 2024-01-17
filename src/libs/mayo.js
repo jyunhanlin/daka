@@ -3,42 +3,40 @@ const { parseCookies } = require('../resource');
 class MayoModule {
   async login({ username, password }) {
     let cookie = '';
-    const res1 = await fetch('https://apolloxe.mayohr.com/tube');
+
+    // get the csrf token
+    const res1 = await fetch('https://auth.mayohr.com/HRM/Account/Login');
     cookie = `${cookie}${parseCookies(res1.headers.getSetCookie())}`;
-
-    const res2 = await fetch('https://auth.mayohr.com/HRM/Account/Login');
-
-    cookie = `${cookie}${parseCookies(res2.headers.getSetCookie())}`;
-
-    const html = await res2.text();
-
+    const html = await res1.text();
     const cherrio = require('cheerio');
     const $ = cherrio.load(html);
-    const __RequestVerificationToken = $(
-      '[name=__RequestVerificationToken]'
-    ).attr('value');
+    const csrfToken = $('[name=__RequestVerificationToken]').attr('value');
 
+    if (!csrfToken) throw new Error('no csrfToken');
+
+    // login
     const body = new URLSearchParams();
-    body.append('__RequestVerificationToken', __RequestVerificationToken);
+    body.append('__RequestVerificationToken', csrfToken);
     body.append('grant_type', 'password');
     body.append('password', password);
     body.append('userName', username);
     body.append('userStatus', 1);
-
-    const res3 = await fetch('https://auth.mayohr.com/Token', {
+    const res2 = await fetch('https://auth.mayohr.com/Token', {
       method: 'POST',
-      cookie,
+      headers: {
+        cookie,
+      },
       body,
     });
+    cookie = `${cookie}${parseCookies(res2.headers.getSetCookie())}`;
 
-    cookie = `${cookie}${parseCookies(res3.headers.getSetCookie())}`;
+    const { code } = await res2.json();
 
-    const json = await res3.json();
+    if (!code) throw new Error('no code');
 
-    console.log({ json }, cookie.split(';'));
-
-    const res4 = await fetch(
-      `https://authcommon.mayohr.com/api/auth/checkticket?code=${json.code}`,
+    // get the session cookie
+    const res3 = await fetch(
+      `https://authcommon.mayohr.com/api/auth/checkticket?code=${code}`,
       {
         method: 'GET',
         headers: {
@@ -46,13 +44,21 @@ class MayoModule {
         },
       }
     );
+    cookie = `${cookie}${parseCookies(res3.headers.getSetCookie())}`;
 
-    this.cookie = parseCookies(res4.headers.getSetCookie());
-
-    console.log(await res4.json());
+    this.cookie = cookie;
   }
 
-  logout() {}
+  async logout() {
+    // https://auth.mayohr.com/api/accountapi/ExternalADLogout?returnUrl=https%3A%2F%2Fapolloxe.mayohr.com%2Ftube
+
+    await fetch('https://auth.mayohr.com/api/accountapi/Logout', {
+      method: 'GET',
+      headers: {
+        cookie: this.cookie,
+      },
+    });
+  }
 
   async checkDakaDay() {
     console.log('---->', this.cookie);
@@ -72,7 +78,23 @@ class MayoModule {
     console.log({ json });
   }
 
-  punch({ punchType }) {}
+  async punch({ punchType }) {
+    const res = await fetch(
+      'https://apolloxe.mayohr.com/backend/pt/api/checkIn/punch/web',
+      {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          cookie: this.cookie,
+        },
+        body: JSON.stringify({
+          AttendanceType: punchType === 'S' ? 1 : 2,
+        }),
+      }
+    );
+
+    console.log(await res.json());
+  }
 }
 
 module.exports = MayoModule;
