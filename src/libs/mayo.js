@@ -8,7 +8,7 @@ const {
   MINUTE,
   format,
   TODAY,
-} = require('../utils/resource.js');
+} = require('../utils/resource');
 
 class MayoModule {
   async login({ username, password }) {
@@ -40,7 +40,7 @@ class MayoModule {
     });
     cookie = `${cookie}${parseCookies(res2.headers.getSetCookie())}`;
 
-    const { code } = await res2.json();
+    const { code } = await res2on();
 
     if (!code) throw new Error('no code');
 
@@ -87,7 +87,7 @@ class MayoModule {
       }
     );
 
-    const { Data } = await res.json();
+    const { Data } = await reson();
 
     if (!Data.Calendars) throw new Error('get calendar failed');
 

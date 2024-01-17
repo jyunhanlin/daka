@@ -9,10 +9,10 @@ const {
   MAX_RETRY_COUNT,
   DELAY_START_MINS,
   DELAY_END_MINS,
-} = require('./env.js');
-const { delay, HOUR } = require('./utils/resource.js');
-const Daka = require('./daka.js');
-const Module = require(`./libs/${MODULE}.js`);
+} = require('./env');
+const { delay, HOUR } = require('./utils/resource');
+const Daka = require('./daka');
+const Module = require(`./libs/${MODULE}`);
 
 let punchType = HOUR >= 12 ? 'E' : 'S';
 

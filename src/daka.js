@@ -1,4 +1,4 @@
-const { sleep } = require('./utils/resource.js');
+const { sleep } = require('./utils/resource');
 
 class Daka {
   constructor({ dakaModule, username, password, maxRetryCount, punchType }) {

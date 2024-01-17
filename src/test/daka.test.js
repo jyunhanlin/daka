@@ -1,4 +1,4 @@
-const { checkPersonalEvents } = require('../daka.js');
+const { checkPersonalEvents } = require('../utils/resource');
 
 describe('daka -> checkPersonalEvents', () => {
   it('no events', () => {
