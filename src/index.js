@@ -10,7 +10,7 @@ const {
   DELAY_START_MINS,
   DELAY_END_MINS,
 } = require('./env.js');
-const { delay, HOUR } = require('./resource.js');
+const { delay, HOUR } = require('./utils/resource.js');
 const Daka = require('./daka.js');
 const Module = require(`./libs/${MODULE}.js`);
 
@@ -30,7 +30,7 @@ async function main() {
     dakaModule: new Module({ options: MODULE_OPTIONS }),
     username: USERNAME,
     password: PASSWORD,
-    retryCount: MAX_RETRY_COUNT,
+    maxRetryCount: MAX_RETRY_COUNT,
     punchType,
   });
 
@@ -44,9 +44,9 @@ if (!MODULE || !USERNAME || !PASSWORD) {
     'Please set the required env variables, MODULE, USERNAME, PASSWORD'
   );
   process.exit(1);
-} else {
-  if (process.argv[2] && ['S', 'E'].includes(process.argv[2]))
-    punchType = process.argv[2];
-
-  main();
 }
+
+if (process.argv[2] && ['S', 'E'].includes(process.argv[2]))
+  punchType = process.argv[2];
+
+main();

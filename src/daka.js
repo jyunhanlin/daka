@@ -1,46 +1,41 @@
+const { sleep } = require('./utils/resource.js');
+
 class Daka {
-  constructor({ dakaModule, username, password, retryCount, punchType }) {
+  constructor({ dakaModule, username, password, maxRetryCount, punchType }) {
     this.dakaModule = dakaModule;
     this.username = username;
     this.password = password;
-    this.retryCount = retryCount;
+    this.retryCount = 0;
+    this.maxRetryCount = maxRetryCount;
     this.punchType = punchType;
   }
 
-  login() {
-    return this.dakaModule.login({
-      username: this.username,
-      password: this.password,
-    });
-  }
-
-  logout() {
-    return this.dakaModule.logout();
-  }
-
-  checkDakaDay() {
-    return this.dakaModule.checkDakaDay();
-  }
-
-  async punch() {
+  punch = async () => {
     try {
-      await this.login();
+      await this.dakaModule.login({
+        username: this.username,
+        password: this.password,
+      });
 
-      const isDakaDay = await this.checkDakaDay();
+      const isDakaDay = await this.dakaModule.checkDakaDay({
+        punchType: this.punchType,
+      });
 
-      await this.dakaModule.punch({ punchType: this.punchType });
+      if (isDakaDay) await this.dakaModule.punch({ punchType: this.punchType });
     } catch (e) {
       console.log('Error:', e);
 
-      if (retryCount < MAX_RETRY_COUNT) {
+      if (this.retryCount < this.maxRetryCount) {
         console.log('Some error happen, retry in 3 secs');
-        retryCount += 1;
-        setTimeout(this.punch, 3000);
+        this.retryCount += 1;
+
+        await sleep(3000);
+        await this.punch();
       }
     }
 
-    await this.logout();
-  }
+    await this.dakaModule.logout();
+  };
 }
 
 module.exports = Daka;

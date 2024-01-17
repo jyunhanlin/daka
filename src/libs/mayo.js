@@ -1,4 +1,14 @@
-const { parseCookies } = require('../resource');
+const {
+  checkPersonalEvents,
+  parseCookies,
+  YEAR,
+  MONTH,
+  DAY,
+  HOUR,
+  MINUTE,
+  format,
+  TODAY,
+} = require('../utils/resource.js');
 
 class MayoModule {
   async login({ username, password }) {
@@ -60,11 +70,15 @@ class MayoModule {
     });
   }
 
-  async checkDakaDay() {
-    console.log('---->', this.cookie);
+  // ItemOptionId
+  // CY00001: working day
+  // CY00003: recess day or public holiday
+  // CY00004: regular day off
+  async checkDakaDay({ punchType }) {
+    const dakaDay = format(TODAY);
 
     const res = await fetch(
-      'https://apolloxe.mayohr.com/backend/pt/api/EmployeeCalendars/scheduling/V2?year=2024&month=1',
+      `https://apolloxe.mayohr.com/backend/pt/api/EmployeeCalendars/scheduling/V2?year=${YEAR}&month=${MONTH}`,
       {
         method: 'GET',
         headers: {
@@ -73,11 +87,44 @@ class MayoModule {
       }
     );
 
-    const json = await res.json();
+    const { Data } = await res.json();
 
-    console.log({ json });
+    if (!Data.Calendars) throw new Error('get calendar failed');
+
+    const calendarIndex = DAY - 1;
+
+    const currentDayCalendar = Data.Calendars[calendarIndex];
+
+    if (!currentDayCalendar) throw new Error('get current day calendar failed');
+
+    if (['CY00003', 'CY00004'].includes(currentDayCalendar.ItemOptionId)) {
+      console.log(dakaDay, "It's day off, no daka");
+      return false;
+    }
+
+    // TODO: personal events
+    const personalEvents = currentDayCalendar.LeaveSheets;
+    if (
+      checkPersonalEvents({
+        events: personalEvents,
+        today: dakaDay,
+        hour: HOUR,
+        min: MINUTE,
+        punchType,
+      })
+    ) {
+      console.log(dakaDay, "It's a personal event, no daka");
+      return false;
+    }
+
+    console.log(dakaDay, 'daka');
+
+    return true;
   }
 
+  // AttendanceType:
+  // 1: punch in
+  // 2: punch out
   async punch({ punchType }) {
     const res = await fetch(
       'https://apolloxe.mayohr.com/backend/pt/api/checkIn/punch/web',
@@ -93,7 +140,12 @@ class MayoModule {
       }
     );
 
-    console.log(await res.json());
+    const result = await res.json();
+
+    const { Meta } = result;
+
+    if (Meta?.HttpStatusCode !== '200')
+      throw new Error(`daka punch failed, ${JSON.stringify(result)}`);
   }
 }
 

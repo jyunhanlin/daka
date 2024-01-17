@@ -15,6 +15,11 @@ const DELAY_END_MINS = Number.isNaN(Number(process.env.DELAY_END_MINS))
 const MAX_RETRY_COUNT = Number.isNaN(Number(process.env.MAX_RETRY_COUNT))
   ? 3
   : +process.env.MAX_RETRY_COUNT;
+const TIMEZONE_MINUTE_OFFSET = Number.isNaN(
+  Number(process.env.TIMEZONE_MINUTE_OFFSET)
+)
+  ? 480
+  : +process.env.TIMEZONE_MINUTE_OFFSET;
 
 module.exports = {
   MODULE,
@@ -25,4 +30,5 @@ module.exports = {
   DELAY_START_MINS,
   DELAY_END_MINS,
   MAX_RETRY_COUNT,
+  TIMEZONE_MINUTE_OFFSET,
 };
