@@ -16,9 +16,9 @@ npm install
 
 - Copy `example.env` to `.env`
 - Change the required env variables
-  - FEMAS_DOMAIN: the company domain for FEMAS
-  - FEMAS_USERNAME: your username for FEMAS
-  - FEMAS_PASSWORD: your password for FEMAS
+  - MODULE: the daka module
+  - USERNAME: your username
+  - PASSWORD: your password
 - Edit the `crontab`
 
 ```bash
@@ -43,9 +43,9 @@ on:
 ```
 
 - Add required secrets to GitHub Actions
-  - FEMAS_DOMAIN: the company domain for FEMAS
-  - FEMAS_USERNAME: your username for FEMAS
-  - FEMAS_PASSWORD: your password for FEMAS
+  - MODULE: the daka module
+  - USERNAME: your username
+  - PASSWORD: your password
 
 ### Docker
 
@@ -66,7 +66,7 @@ docker build -t daka .
 - Run the image with username and password
 
 ```bash
-docker run -e FEMAS_DOMAIN=DOMAIN -e FEMAS_USERNAME=USERNAME -e FEMAS_PASSWORD=PASSWORD DAKA_IMAGE
+docker run -e MODULE=module -e USERNAME=your_username -e PASSWORD=your_password DAKA_IMAGE
 ```
 
 ### Other environment variables (optional)
