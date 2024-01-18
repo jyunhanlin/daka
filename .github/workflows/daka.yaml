@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      FEMAS_DOMAIN: ${{ secrets.FEMAS_DOMAIN}}
-      FEMAS_USERNAME: ${{ secrets.FEMAS_USERNAME }}
-      FEMAS_PASSWORD: ${{ secrets.FEMAS_PASSWORD }}
+      MODULE: ${{ secrets.MODULE}}
+      USERNAME: ${{ secrets.USERNAME }}
+      PASSWORD: ${{ secrets.PASSWORD }}
       DELAY_START_MINS: ${{ secrets.DELAY_START_MINS }}
       DELAY_END_MINS: ${{ secrets.DELAY_END_MINS }}
 
