@@ -58,8 +58,8 @@ const checkPersonalEvents = ({
   punchType = '',
 } = {}) => {
   const personalEvents = events.reduce((acc, cur) => {
-    const start = cur.origStart.split(' ');
-    const end = cur.origEnd.split(' ');
+    const start = cur.startDateTime.split('T');
+    const end = cur.endDateTime.split('T');
 
     const startDate = start[0];
     const startTime = start[1].split(':');

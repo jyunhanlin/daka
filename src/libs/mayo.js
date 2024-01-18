@@ -8,6 +8,7 @@ const {
   MINUTE,
   format,
   TODAY,
+  getCSTDate,
 } = require('../utils/resource');
 
 class MayoModule {
@@ -40,7 +41,7 @@ class MayoModule {
     });
     cookie = `${cookie}${parseCookies(res2.headers.getSetCookie())}`;
 
-    const { code } = await res2on();
+    const { code } = await res2.json();
 
     if (!code) throw new Error('no code');
 
@@ -70,10 +71,6 @@ class MayoModule {
     });
   }
 
-  // ItemOptionId
-  // CY00001: working day
-  // CY00003: recess day or public holiday
-  // CY00004: regular day off
   async checkDakaDay({ punchType }) {
     const dakaDay = format(TODAY);
 
@@ -87,7 +84,7 @@ class MayoModule {
       }
     );
 
-    const { Data } = await reson();
+    const { Data } = await res.json();
 
     if (!Data.Calendars) throw new Error('get calendar failed');
 
@@ -97,16 +94,27 @@ class MayoModule {
 
     if (!currentDayCalendar) throw new Error('get current day calendar failed');
 
+    // ItemOptionId
+    // CY00001: working day
+    // CY00003: recess day or public holiday
+    // CY00004: regular day off
     if (['CY00003', 'CY00004'].includes(currentDayCalendar.ItemOptionId)) {
       console.log(dakaDay, "It's day off, no daka");
       return false;
     }
 
-    // TODO: personal events
     const personalEvents = currentDayCalendar.LeaveSheets;
     if (
+      personalEvents?.length &&
       checkPersonalEvents({
-        events: personalEvents,
+        events: personalEvents.map((event) => ({
+          startDateTime: getCSTDate(
+            new Date(event.LeaveStartDatetime)
+          ).toISOString(),
+          endDateTime: getCSTDate(
+            new Date(event.LeaveEndDatetime)
+          ).toISOString(),
+        })),
         today: dakaDay,
         hour: HOUR,
         min: MINUTE,
@@ -122,9 +130,6 @@ class MayoModule {
     return true;
   }
 
-  // AttendanceType:
-  // 1: punch in
-  // 2: punch out
   async punch({ punchType }) {
     const res = await fetch(
       'https://apolloxe.mayohr.com/backend/pt/api/checkIn/punch/web',
@@ -134,6 +139,9 @@ class MayoModule {
           'content-type': 'application/json',
           cookie: this.cookie,
         },
+        // AttendanceType:
+        // 1: punch in
+        // 2: punch out
         body: JSON.stringify({
           AttendanceType: punchType === 'S' ? 1 : 2,
         }),
@@ -147,6 +155,10 @@ class MayoModule {
     // TODO, wait for mins from result
     if (Meta?.HttpStatusCode !== '200')
       throw new Error(`daka punch failed, ${JSON.stringify(result)}`);
+
+    const dataTime = getCSTDate(new Date(result.Data.punchDate)).toISOString();
+
+    console.log(`daka success, time: ${dataTime}`);
   }
 }
 
