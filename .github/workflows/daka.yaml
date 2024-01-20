@@ -45,7 +45,7 @@ jobs:
           if [[ $result == *"daka success"* ]]; then
             echo "Daka Success"
             echo "result=success" >> $GITHUB_OUTPUT
-          elif [[ $result == *"not daka"* ]]; then
+          elif [[ $result == *"no daka"* ]]; then
             echo "No Daka"
             echo "result=no need" >> $GITHUB_OUTPUT
           else

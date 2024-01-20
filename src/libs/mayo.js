@@ -131,22 +131,20 @@ class MayoModule {
   }
 
   async punch({ punchType }) {
-    const res = await fetch(
-      'https://apolloxe.mayohr.com/backend/pt/api/checkIn/punch/web',
-      {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-          cookie: this.cookie,
-        },
-        // AttendanceType:
-        // 1: punch in
-        // 2: punch out
-        body: JSON.stringify({
-          AttendanceType: punchType === 'S' ? 1 : 2,
-        }),
-      }
-    );
+    const res = await fetch('https://pt-be.mayohr.com/api/checkIn/punch/web', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        cookie: this.cookie,
+      },
+      // AttendanceType:
+      // 1: punch in
+      // 2: punch out
+      body: JSON.stringify({
+        AttendanceType: punchType === 'S' ? 1 : 2,
+        IsOverride: true,
+      }),
+    });
 
     const result = await res.json();
 
