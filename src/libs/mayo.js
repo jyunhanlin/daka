@@ -131,7 +131,23 @@ class MayoModule {
   }
 
   async punch({ punchType }) {
-    const res = await fetch('https://pt-be.mayohr.com/api/checkIn/punch/web', {
+    const res1 = await fetch(
+      'https://apolloxe.mayohr.com/backend/pt/api/locations',
+      {
+        method: 'GET',
+        headers: {
+          cookie: this.cookie,
+        },
+      }
+    );
+
+    const { Data } = await res1.json();
+
+    if (!Data || !Data.length) throw new Error('no location');
+
+    const { PunchesLocationId, Latitude, Longitude } = Data[0];
+
+    const res = await fetch('https://pt.mayohr.com/api/checkin/punch/locate', {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
@@ -142,7 +158,9 @@ class MayoModule {
       // 2: punch out
       body: JSON.stringify({
         AttendanceType: punchType === 'S' ? 1 : 2,
-        IsOverride: true,
+        Latitude,
+        Longitude,
+        PunchesLocationId,
       }),
     });
 
