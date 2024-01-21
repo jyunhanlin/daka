@@ -12,7 +12,6 @@ const {
 } = require('./env');
 const { delay, HOUR } = require('./utils/resource');
 const Daka = require('./daka');
-const Module = require(`./libs/${MODULE}`);
 
 let punchType = HOUR >= 12 ? 'E' : 'S';
 
@@ -26,6 +25,7 @@ async function main() {
       delayEndMins: DELAY_END_MINS,
     });
 
+  const Module = require(`./libs/${MODULE}`);
   const daka = new Daka({
     dakaModule: new Module({ options: MODULE_OPTIONS }),
     username: USERNAME,
