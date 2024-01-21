@@ -69,11 +69,20 @@ docker build -t daka .
 docker run -e MODULE=module -e USERNAME=your_username -e PASSWORD=your_password DAKA_IMAGE
 ```
 
-### Other environment variables (optional)
+### Required environment variables
 
-| env variable     | default | description                                                                   |
-| ---------------- | :-----: | ----------------------------------------------------------------------------- |
-| DELAY_START_MINS |    5    | the delay mins before start daka, range from 0 to DELAY_START_MINS            |
-| DELAY_END_MINS   |   15    | the delay mins before end daka, range from DELAY_START_MINS to DELAY_END_MINS |
-| IMMEDIATE_DAKA   |  false  | immediate daka without delay                                                  |
-| MAX_RETRY_COUNT  |    3    | total retry times                                                             |
+| env variable | description              |
+| ------------ | ------------------------ |
+| MODULE       | the Daka module          |
+| USERNAME     | user name for the module |
+| PASSWORD     | password for the module  |
+
+### Options environment variables
+
+| env variable     | default  | description                                                                   |
+| ---------------- | :------: | ----------------------------------------------------------------------------- |
+| MODULE_OPTIONS   | undefine | the specific options for the module                                           |
+| DELAY_START_MINS |    5     | the delay mins before start daka, range from 0 to DELAY_START_MINS            |
+| DELAY_END_MINS   |    15    | the delay mins before end daka, range from DELAY_START_MINS to DELAY_END_MINS |
+| IMMEDIATE_DAKA   |  false   | immediate daka without delay                                                  |
+| MAX_RETRY_COUNT  |    3     | total retry times                                                             |
