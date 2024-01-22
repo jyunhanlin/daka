@@ -1,6 +1,6 @@
 # Daka
 
-Check the holidays, and your personal events, then daka!!
+Check the holidays and your personal events, then daka!!
 
 ## Usage
 
@@ -30,10 +30,10 @@ crontab -e
 
 ### GitHub Actions
 
-> [Note](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule): The schedule event may be delayed.
+> [Note](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule): The time of the scheduled event might delay.
 
-- Modify the schedule you want (GitHub Actions use UTC time)
-- After each daka, GitHub Actions open an issue and then close it immediately. (So an email will be sent to inform the status of daka)
+- Modify the schedule you want (GitHub Actions use UTC)
+- After each daka, GitHub Actions open an issue and then close it immediately. (email will be sent to inform the status of daka)
 
 ```yaml
 on:
@@ -49,7 +49,7 @@ on:
 
 ### Docker
 
-- Pull the image from Docker Hub or GitHub packages or build your own docker image
+- Pull the image from Docker Hub or GitHub packages or build your docker image
 
 ```bash
 docker pull jyunhanlin/daka:latest
@@ -58,7 +58,7 @@ docker pull jyunhanlin/daka:latest
 
 docker pull ghcr.io/jyunhanlin/daka:latest
 
-# or build your own image
+# or build your image
 
 docker build -t daka .
 ```
@@ -69,7 +69,9 @@ docker build -t daka .
 docker run -e MODULE=module -e USERNAME=your_username -e PASSWORD=your_password DAKA_IMAGE
 ```
 
-### Required environment variables
+## Environment Variables
+
+### Required
 
 | env variable | description                     |
 | ------------ | ------------------------------- |
@@ -77,12 +79,12 @@ docker run -e MODULE=module -e USERNAME=your_username -e PASSWORD=your_password 
 | USERNAME     | user name for the module        |
 | PASSWORD     | password for the module         |
 
-### Options environment variables
+### Options
 
 | env variable     | default  | description                                                                   |
 | ---------------- | :------: | ----------------------------------------------------------------------------- |
 | MODULE_OPTIONS   | undefine | the specific options for the module                                           |
 | DELAY_START_MINS |    5     | the delay mins before start daka, range from 0 to DELAY_START_MINS            |
 | DELAY_END_MINS   |    15    | the delay mins before end daka, range from DELAY_START_MINS to DELAY_END_MINS |
-| IMMEDIATE_DAKA   |  false   | immediate daka without delay                                                  |
+| IMMEDIATE_DAKA   |    0     | immediate daka without delay (1: enable, 0: disable)                          |
 | MAX_RETRY_COUNT  |    3     | total retry times                                                             |
