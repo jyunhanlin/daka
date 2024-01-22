@@ -155,6 +155,7 @@ class FemasModule {
       }
     );
 
+    // TODO
     let personalEvents = (await personalEventsResponse.json()) || [];
 
     if (
