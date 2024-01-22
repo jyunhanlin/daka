@@ -15,6 +15,8 @@ const DELAY_END_MINS = Number.isNaN(Number(process.env.DELAY_END_MINS))
 const MAX_RETRY_COUNT = Number.isNaN(Number(process.env.MAX_RETRY_COUNT))
   ? 3
   : +process.env.MAX_RETRY_COUNT;
+
+// TODO
 const TIMEZONE_MINUTE_OFFSET = Number.isNaN(
   Number(process.env.TIMEZONE_MINUTE_OFFSET)
 )
