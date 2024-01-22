@@ -131,6 +131,7 @@ class MayoModule {
   }
 
   async punch({ punchType }) {
+    console.log(punchType === 'E' ? 'bye' : 'gogo');
     // get the location
     const res1 = await fetch(
       'https://apolloxe.mayohr.com/backend/pt/api/locations',
@@ -173,7 +174,7 @@ class MayoModule {
 
     const dataTime = getCSTDate(
       new Date(punchResult.Data.punchDate)
-    ).toISOString();
+    ).toTimeString();
 
     console.log(`daka success, time: ${dataTime}`);
   }
