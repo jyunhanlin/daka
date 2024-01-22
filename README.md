@@ -71,11 +71,11 @@ docker run -e MODULE=module -e USERNAME=your_username -e PASSWORD=your_password 
 
 ### Required environment variables
 
-| env variable | description              |
-| ------------ | ------------------------ |
-| MODULE       | the Daka module          |
-| USERNAME     | user name for the module |
-| PASSWORD     | password for the module  |
+| env variable | description                     |
+| ------------ | ------------------------------- |
+| MODULE       | the Daka module (mayo \| femas) |
+| USERNAME     | user name for the module        |
+| PASSWORD     | password for the module         |
 
 ### Options environment variables
 
