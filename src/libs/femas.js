@@ -1,20 +1,22 @@
-// TODO
-
 const { startOfMonth, endOfMonth } = require('date-fns');
 
 const {
   getCSTDate,
-  getDaysArray,
   format,
   TODAY,
   HOUR,
   MINUTE,
+  checkPersonalEvents,
 } = require('../resource');
 
 const SESSION_LIFE_TIME = Math.floor(TODAY.getTime() / 1000) + 1800; // copy from femas javascript
 
 class FemasModule {
-  async _login() {
+  constructor({ options }) {
+    this.domain = options;
+  }
+
+  async _login({ session, domain, username, password }) {
     const loginData = new URLSearchParams();
 
     loginData.append('data[Account][username]', username);
@@ -54,7 +56,9 @@ class FemasModule {
     let session = '';
     let ClockRecordUserId = '';
     let AttRecordUserId = '';
-    const getCookieResponse = await fetch(`https://femascloud.com/${domain}/`);
+    const getCookieResponse = await fetch(
+      `https://femascloud.com/${this.domain}/`
+    );
 
     let sessions = [];
 
@@ -76,7 +80,7 @@ class FemasModule {
       try {
         const response = await _login({
           session: sessions[i],
-          domain,
+          domain: this.domain,
           username,
           password,
         });
@@ -96,110 +100,19 @@ class FemasModule {
       throw new Error('login error after try all the sessions');
     }
 
-    return {
-      session,
-      ClockRecordUserId,
-      AttRecordUserId,
-    };
+    this.session = session;
+    this.ClockRecordUserId = ClockRecordUserId;
+    this.AttRecordUserId = AttRecordUserId;
   }
 
   async logout() {
-    await fetch(`https://femascloud.com/${domain}/accounts/logout`, {
+    await fetch(`https://femascloud.com/${this.domain}/accounts/logout`, {
       headers: {
-        cookie: `${domain}=${session};  lifeTimePoint${domain}=${SESSION_LIFE_TIME}`,
-        Referer: `https://femascloud.com/${domain}/users/main?from=/Accounts/login?ext=html`,
+        cookie: `${this.domain}=${this.session};  lifeTimePoint${this.domain}=${SESSION_LIFE_TIME}`,
+        Referer: `https://femascloud.com/${this.domain}/users/main?from=/Accounts/login?ext=html`,
       },
       method: 'GET',
     });
-  }
-
-  async checkPersonalEvents({
-    events = [],
-    today = '',
-    hour = '',
-    min = '',
-    clockType = '',
-  } = {}) {
-    const personalEvents = events.reduce((acc, cur) => {
-      const start = cur.origStart.split(' ');
-      const end = cur.origEnd.split(' ');
-
-      const startDate = start[0];
-      const startTime = start[1].split(':');
-      const startHour = startTime[0];
-      const startMin = startTime[1];
-
-      const endDate = end[0];
-      const endTime = end[1].split(':');
-      const endHour = endTime[0];
-      const endMin = endTime[1];
-
-      let events = [];
-
-      if (startDate === endDate) {
-        events.push({
-          date: startDate,
-          startHour,
-          startMin,
-          endHour,
-          endMin,
-        });
-      } else {
-        const days = getDaysArray(startDate, endDate);
-
-        days.forEach((day) => {
-          let event = {
-            date: day,
-            startHour: '10',
-            startMin: '00',
-            endHour: '19',
-            endMin: '00',
-          };
-
-          if (day === startDate) {
-            event.startHour = startHour;
-            event.startMin = startMin;
-          } else if (day === endDate) {
-            event.endHour = endHour;
-            event.endMin = endMin;
-          }
-
-          events.push(event);
-        });
-      }
-
-      return acc.concat(events);
-    }, []);
-
-    for (let i = 0; i < personalEvents.length; i += 1) {
-      const { date, startHour, startMin, endHour, endMin } = personalEvents[i];
-
-      if (date === today) {
-        // all-day
-        const isAllDay = Number(endHour) - Number(startHour) >= 9;
-        if (isAllDay) return true;
-
-        // between start and end
-        if (startHour <= hour && hour <= endHour) return true;
-
-        // before start or after end
-        if (clockType === 'S') {
-          const timeDiff =
-            (Number(startHour) - Number(hour)) * 60 +
-            (Number(startMin) - Number(min));
-
-          if (timeDiff <= 60) return true;
-        } else if (clockType === 'E') {
-          const timeDiff =
-            (Number(hour) - Number(endHour)) * 60 +
-            (Number(min) - Number(endMin));
-
-          if (timeDiff <= 60) return true;
-        }
-      }
-    }
-
-    return false;
   }
 
   async checkDakaDay() {
@@ -209,11 +122,13 @@ class FemasModule {
     const dakaDay = format(TODAY);
 
     const holidaysResponse = await fetch(
-      `https://femascloud.com/${domain}/Holidays/get_holidays?start=${startDayOfMonth}&end=${lastDayOfMonth}&_=${Date.now()}`,
+      `https://femascloud.com/${
+        this.domain
+      }/Holidays/get_holidays?start=${startDayOfMonth}&end=${lastDayOfMonth}&_=${Date.now()}`,
       {
         headers: {
-          cookie: `${domain}=${session};  lifeTimePoint${domain}=${SESSION_LIFE_TIME}`,
-          Referer: `https://femascloud.com/${domain}/Holidays/browse`,
+          cookie: `${this.domain}=${this.session};  lifeTimePoint${this.domain}=${SESSION_LIFE_TIME}`,
+          Referer: `https://femascloud.com/${this.domain}/Holidays/browse`,
         },
         method: 'GET',
       }
@@ -228,11 +143,13 @@ class FemasModule {
     }
 
     const personalEventsResponse = await fetch(
-      `https://femascloud.com/${domain}/Holidays/get_events?start=${startDayOfMonth}&end=${lastDayOfMonth}&_=${Date.now()}`,
+      `https://femascloud.com/${
+        this.domain
+      }/Holidays/get_events?start=${startDayOfMonth}&end=${lastDayOfMonth}&_=${Date.now()}`,
       {
         headers: {
-          cookie: `${domain}=${session};  lifeTimePoint${domain}=${SESSION_LIFE_TIME}`,
-          Referer: `https://femascloud.com/${domain}/Holidays/browse`,
+          cookie: `${this.domain}=${this.session};  lifeTimePoint${this.domain}=${SESSION_LIFE_TIME}`,
+          Referer: `https://femascloud.com/${this.domain}/Holidays/browse`,
         },
         method: 'GET',
       }
@@ -246,7 +163,7 @@ class FemasModule {
         today: dakaDay,
         hour: HOUR,
         min: MINUTE,
-        clockType,
+        punchType,
       })
     ) {
       console.log(dakaDay, "It's a personal event, not daka");
@@ -258,33 +175,27 @@ class FemasModule {
     return true;
   }
 
-  async daka({
-    clockType,
-    session,
-    domain,
-    ClockRecordUserId,
-    AttRecordUserId,
-  }) {
-    console.log(clockType === 'E' ? 'bye' : 'gogo');
+  async punch({ punchType }) {
+    console.log(punchType === 'E' ? 'bye' : 'gogo');
 
     const dakaData = new URLSearchParams();
     dakaData.append('_method', 'POST');
-    dakaData.append('data[ClockRecord][user_id]', ClockRecordUserId);
-    dakaData.append('data[AttRecord][user_id]', AttRecordUserId);
+    dakaData.append('data[ClockRecord][user_id]', this.ClockRecordUserId);
+    dakaData.append('data[AttRecord][user_id]', this.AttRecordUserId);
     dakaData.append('data[ClockRecord][shift_id]', '2');
     dakaData.append('data[ClockRecord][period]', '1');
-    dakaData.append('data[ClockRecord][clock_type]', clockType);
+    dakaData.append('data[ClockRecord][clock_type]', punchType);
     dakaData.append('data[ClockRecord][latitude]', '');
     dakaData.append('data[ClockRecord][longitude]', '');
 
     const dakaResponse = await fetch(
-      `https://femascloud.com/${domain}/users/clock_listing`,
+      `https://femascloud.com/${this.domain}/users/clock_listing`,
       {
         headers: {
           'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
           'x-requested-with': 'XMLHttpRequest',
-          cookie: `${domain}=${session};  lifeTimePoint${domain}=${SESSION_LIFE_TIME}`,
-          Referer: `https://femascloud.com/${domain}/users/main?from=/Accounts/login?ext=html`,
+          cookie: `${this.domain}=${this.session};  lifeTimePoint${this.domain}=${SESSION_LIFE_TIME}`,
+          Referer: `https://femascloud.com/${this.domain}/users/main?from=/Accounts/login?ext=html`,
         },
         body: dakaData,
         method: 'POST',
@@ -299,7 +210,7 @@ class FemasModule {
     const dakaRecords = $('.textBlue');
 
     let dakaTime;
-    if (clockType !== 'E') dakaTime = dakaRecords.eq(0).text().trim();
+    if (punchType !== 'E') dakaTime = dakaRecords.eq(0).text().trim();
     else dakaTime = dakaRecords.eq(1).text().trim();
 
     if (!dakaTime) {
