@@ -84,6 +84,7 @@ const checkPersonalEvents = ({
     } else {
       const days = getDaysArray(startDate, endDate);
 
+      // TODO
       days.forEach((day) => {
         let event = {
           date: day,
