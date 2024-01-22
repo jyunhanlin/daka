@@ -172,9 +172,9 @@ class MayoModule {
     if (Meta?.HttpStatusCode !== '200')
       throw new Error(`daka punch failed, ${JSON.stringify(punchResult)}`);
 
-    const dataTime = getCSTDate(
-      new Date(punchResult.Data.punchDate)
-    ).toTimeString();
+    const dataTime = getCSTDate(new Date(punchResult.Data.punchDate))
+      .toTimeString()
+      .split(' ')[0];
 
     console.log(`daka success, time: ${dataTime}`);
   }
