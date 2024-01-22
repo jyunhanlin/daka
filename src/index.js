@@ -26,8 +26,9 @@ async function main() {
     });
 
   const Module = require(`./libs/${MODULE}`);
+  const dakaModule = new Module({ options: MODULE_OPTIONS });
   const daka = new Daka({
-    dakaModule: new Module({ options: MODULE_OPTIONS }),
+    dakaModule,
     username: USERNAME,
     password: PASSWORD,
     maxRetryCount: MAX_RETRY_COUNT,

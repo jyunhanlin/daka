@@ -131,6 +131,7 @@ class MayoModule {
   }
 
   async punch({ punchType }) {
+    // get the location
     const res1 = await fetch(
       'https://apolloxe.mayohr.com/backend/pt/api/locations',
       {
@@ -140,14 +141,12 @@ class MayoModule {
         },
       }
     );
-
     const { Data } = await res1.json();
-
     if (!Data || !Data.length) throw new Error('no location');
 
     const { PunchesLocationId, Latitude, Longitude } = Data[0];
 
-    const res = await fetch('https://pt.mayohr.com/api/checkin/punch/locate', {
+    const res2 = await fetch('https://pt.mayohr.com/api/checkin/punch/locate', {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
@@ -164,15 +163,17 @@ class MayoModule {
       }),
     });
 
-    const result = await res.json();
+    const punchResult = await res2.json();
 
-    const { Meta } = result;
+    const { Meta } = punchResult;
 
-    // TODO, wait for mins from result
+    // TODO, wait for mins from punchResult
     if (Meta?.HttpStatusCode !== '200')
-      throw new Error(`daka punch failed, ${JSON.stringify(result)}`);
+      throw new Error(`daka punch failed, ${JSON.stringify(punchResult)}`);
 
-    const dataTime = getCSTDate(new Date(result.Data.punchDate)).toISOString();
+    const dataTime = getCSTDate(
+      new Date(punchResult.Data.punchDate)
+    ).toISOString();
 
     console.log(`daka success, time: ${dataTime}`);
   }
