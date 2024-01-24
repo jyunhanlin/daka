@@ -132,6 +132,8 @@ class MayoModule {
 
   async punch({ punchType }) {
     console.log(punchType === 'E' ? 'bye' : 'gogo');
+    console.log("✅ remember to commit your today's work!!!!!");
+
     // get the location
     const res1 = await fetch(
       'https://apolloxe.mayohr.com/backend/pt/api/locations',
