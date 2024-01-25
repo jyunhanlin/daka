@@ -25,7 +25,7 @@ async function main() {
       delayEndMins: DELAY_END_MINS,
     });
 
-  const Module = require(`./libs/${MODULE}`);
+  const Module = require(`./modules/${MODULE}`);
   const dakaModule = new Module({ options: MODULE_OPTIONS });
   const daka = new Daka({
     dakaModule,
