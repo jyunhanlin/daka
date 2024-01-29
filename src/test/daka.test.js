@@ -1,4 +1,4 @@
-const { checkPersonalEvents } = require('../daka.js');
+const { checkPersonalEvents, getCSTDate } = require('../utils/resource');
 
 describe('daka -> checkPersonalEvents', () => {
   it('no events', () => {
@@ -9,7 +9,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-09-30',
         hour: '9',
         min: '57',
-        clockType: 'S',
+        punchType: 'S',
       })
     ).toBe(false);
     expect(
@@ -18,7 +18,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-09-30',
         hour: '19',
         min: '13',
-        clockType: 'E',
+        punchType: 'E',
       })
     ).toBe(false);
   });
@@ -32,7 +32,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-10-03',
         hour: '9',
         min: '57',
-        clockType: 'S',
+        punchType: 'S',
       })
     ).toBe(false);
     expect(
@@ -41,7 +41,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-10-03',
         hour: '19',
         min: '13',
-        clockType: 'E',
+        punchType: 'E',
       })
     ).toBe(false);
 
@@ -51,7 +51,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-10-05',
         hour: '9',
         min: '57',
-        clockType: 'S',
+        punchType: 'S',
       })
     ).toBe(false);
     expect(
@@ -60,7 +60,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-10-05',
         hour: '19',
         min: '13',
-        clockType: 'E',
+        punchType: 'E',
       })
     ).toBe(false);
   });
@@ -74,7 +74,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-10-05',
         hour: '9',
         min: '57',
-        clockType: 'S',
+        punchType: 'S',
       })
     ).toBe(false);
     expect(
@@ -83,7 +83,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-10-05',
         hour: '19',
         min: '13',
-        clockType: 'E',
+        punchType: 'E',
       })
     ).toBe(false);
 
@@ -93,7 +93,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-10-17',
         hour: '9',
         min: '57',
-        clockType: 'S',
+        punchType: 'S',
       })
     ).toBe(false);
     expect(
@@ -102,7 +102,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-10-17',
         hour: '19',
         min: '13',
-        clockType: 'E',
+        punchType: 'E',
       })
     ).toBe(true);
 
@@ -112,7 +112,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-10-17',
         hour: '18',
         min: '57',
-        clockType: 'E',
+        punchType: 'E',
       })
     ).toBe(true);
   });
@@ -126,7 +126,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-10-05',
         hour: '9',
         min: '57',
-        clockType: 'S',
+        punchType: 'S',
       })
     ).toBe(false);
     expect(
@@ -135,7 +135,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-10-05',
         hour: '19',
         min: '13',
-        clockType: 'E',
+        punchType: 'E',
       })
     ).toBe(false);
 
@@ -145,7 +145,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-10-21',
         hour: '9',
         min: '57',
-        clockType: 'S',
+        punchType: 'S',
       })
     ).toBe(true);
     expect(
@@ -154,7 +154,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-10-21',
         hour: '19',
         min: '13',
-        clockType: 'E',
+        punchType: 'E',
       })
     ).toBe(false);
 
@@ -164,7 +164,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-10-21',
         hour: '10',
         min: '7',
-        clockType: 'S',
+        punchType: 'S',
       })
     ).toBe(true);
   });
@@ -178,7 +178,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-10-04',
         hour: '9',
         min: '57',
-        clockType: 'S',
+        punchType: 'S',
       })
     ).toBe(true);
     expect(
@@ -187,7 +187,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-10-04',
         hour: '19',
         min: '13',
-        clockType: 'E',
+        punchType: 'E',
       })
     ).toBe(true);
 
@@ -197,7 +197,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-10-03',
         hour: '9',
         min: '57',
-        clockType: 'S',
+        punchType: 'S',
       })
     ).toBe(false);
     expect(
@@ -206,7 +206,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-10-03',
         hour: '19',
         min: '13',
-        clockType: 'E',
+        punchType: 'E',
       })
     ).toBe(false);
   });
@@ -220,7 +220,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-09-30',
         hour: '9',
         min: '57',
-        clockType: 'S',
+        punchType: 'S',
       })
     ).toBe(true);
     expect(
@@ -229,7 +229,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-09-30',
         hour: '19',
         min: '13',
-        clockType: 'E',
+        punchType: 'E',
       })
     ).toBe(true);
 
@@ -239,7 +239,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-10-03',
         hour: '9',
         min: '57',
-        clockType: 'S',
+        punchType: 'S',
       })
     ).toBe(false);
     expect(
@@ -248,7 +248,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-10-03',
         hour: '19',
         min: '13',
-        clockType: 'E',
+        punchType: 'E',
       })
     ).toBe(false);
   });
@@ -262,7 +262,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-10-03',
         hour: '9',
         min: '57',
-        clockType: 'S',
+        punchType: 'S',
       })
     ).toBe(false);
     expect(
@@ -271,7 +271,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-10-03',
         hour: '19',
         min: '13',
-        clockType: 'E',
+        punchType: 'E',
       })
     ).toBe(false);
 
@@ -281,7 +281,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-10-05',
         hour: '9',
         min: '57',
-        clockType: 'S',
+        punchType: 'S',
       })
     ).toBe(false);
     expect(
@@ -290,7 +290,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-10-05',
         hour: '19',
         min: '13',
-        clockType: 'E',
+        punchType: 'E',
       })
     ).toBe(false);
 
@@ -300,7 +300,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-10-17',
         hour: '9',
         min: '57',
-        clockType: 'S',
+        punchType: 'S',
       })
     ).toBe(false);
     expect(
@@ -309,7 +309,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-10-17',
         hour: '19',
         min: '13',
-        clockType: 'E',
+        punchType: 'E',
       })
     ).toBe(true);
 
@@ -319,7 +319,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-10-21',
         hour: '9',
         min: '57',
-        clockType: 'S',
+        punchType: 'S',
       })
     ).toBe(true);
     expect(
@@ -328,7 +328,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-10-21',
         hour: '19',
         min: '13',
-        clockType: 'E',
+        punchType: 'E',
       })
     ).toBe(false);
 
@@ -338,7 +338,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-10-04',
         hour: '9',
         min: '57',
-        clockType: 'S',
+        punchType: 'S',
       })
     ).toBe(true);
     expect(
@@ -347,7 +347,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-10-04',
         hour: '19',
         min: '13',
-        clockType: 'E',
+        punchType: 'E',
       })
     ).toBe(true);
 
@@ -357,7 +357,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-09-30',
         hour: '9',
         min: '57',
-        clockType: 'S',
+        punchType: 'S',
       })
     ).toBe(true);
     expect(
@@ -366,7 +366,7 @@ describe('daka -> checkPersonalEvents', () => {
         today: '2022-09-30',
         hour: '19',
         min: '13',
-        clockType: 'E',
+        punchType: 'E',
       })
     ).toBe(true);
   });
@@ -374,108 +374,23 @@ describe('daka -> checkPersonalEvents', () => {
 
 const testEvents = [
   {
-    id: '646',
-    model: 'LeaveRecord',
-    dept: 0,
-    leave: 'Company Outing',
-    user: 'test-user',
-    origEnd: '2022-09-30 19:00:00',
-    origStart: '2022-09-27 10:00:00',
-    color: '#00BACC',
-    agent: null,
-    agentName: '',
-    editable: false,
-    public: null,
-    place: '',
-    gc_id: null,
-    is_from_google: 0,
-    is_update_to_google: 0,
-    title: 'Kenting',
-    start: '2022-09-27T10:00:00+00:00',
-    end: '2022-09-30T19:00:00+00:00',
+    startDateTime: '2022-09-27T10:00:00+00:00',
+    endDateTime: '2022-09-30T19:00:00+00:00',
   },
   {
-    id: '681',
-    model: 'LeaveRecord',
-    dept: 0,
-    leave: 'Annual Leave',
-    user: 'test-user',
-    origEnd: '2022-10-04 19:00:00',
-    origStart: '2022-10-04 10:00:00',
-    color: '#00BACC',
-    agent: '0',
-    agentName: '',
-    editable: false,
-    public: null,
-    place: '',
-    gc_id: null,
-    is_from_google: 0,
-    is_update_to_google: 0,
-    title: 'Annual Leave',
-    start: '2022-10-04T10:00:00+00:00',
-    end: '2022-10-04T19:00:00+00:00',
+    startDateTime: '2022-10-04T10:00:00+00:00',
+    endDateTime: '2022-10-04T19:00:00+00:00',
   },
   {
-    id: '680',
-    model: 'LeaveRecord',
-    dept: 0,
-    leave: 'Annual Leave',
-    user: 'test-user',
-    origEnd: '2022-10-05 17:00:00',
-    origStart: '2022-10-05 13:00:00',
-    color: '#00BACC',
-    agent: '0',
-    agentName: '',
-    editable: false,
-    public: null,
-    place: '',
-    gc_id: null,
-    is_from_google: 0,
-    is_update_to_google: 0,
-    title: 'Annual Leave',
-    start: '2022-10-05T13:00:00+00:00',
-    end: '2022-10-05T17:00:00+00:00',
+    startDateTime: '2022-10-05T13:00:00+00:00',
+    endDateTime: '2022-10-05T17:00:00+00:00',
   },
   {
-    id: '678',
-    model: 'LeaveRecord',
-    dept: 0,
-    leave: 'Sick Leave',
-    user: 'test-user',
-    origEnd: '2022-10-17 19:00:00',
-    origStart: '2022-10-17 14:00:00',
-    color: '#00BACC',
-    agent: '0',
-    agentName: '',
-    editable: false,
-    public: null,
-    place: '',
-    gc_id: null,
-    is_from_google: 0,
-    is_update_to_google: 0,
-    title: 'Sick Leave',
-    start: '2022-10-17T14:00:00+00:00',
-    end: '2022-10-17T19:00:00+00:00',
+    startDateTime: '2022-10-17T14:00:00+00:00',
+    endDateTime: '2022-10-17T19:00:00+00:00',
   },
   {
-    id: '506',
-    model: 'LeaveRecord',
-    dept: 0,
-    leave: 'Health Examination Leave',
-    user: 'test-user',
-    origEnd: '2022-10-21 15:00:00',
-    origStart: '2022-10-21 10:00:00',
-    color: '#00BACC',
-    agent: '0',
-    agentName: '',
-    editable: false,
-    public: null,
-    place: '',
-    gc_id: null,
-    is_from_google: 0,
-    is_update_to_google: 0,
-    title: 'Health Examination Leave',
-    start: '2022-10-21T10:00:00+00:00',
-    end: '2022-10-21T15:00:00+00:00',
+    startDateTime: '2022-10-21T10:00:00+00:00',
+    endDateTime: '2022-10-21T15:00:00+00:00',
   },
 ];

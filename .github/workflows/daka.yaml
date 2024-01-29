@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      FEMAS_DOMAIN: ${{ secrets.FEMAS_DOMAIN}}
-      FEMAS_USERNAME: ${{ secrets.FEMAS_USERNAME }}
-      FEMAS_PASSWORD: ${{ secrets.FEMAS_PASSWORD }}
+      MODULE: ${{ secrets.MODULE}}
+      USERNAME: ${{ secrets.USERNAME }}
+      PASSWORD: ${{ secrets.PASSWORD }}
       DELAY_START_MINS: ${{ secrets.DELAY_START_MINS }}
       DELAY_END_MINS: ${{ secrets.DELAY_END_MINS }}
 
@@ -21,9 +21,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
 
       - name: Install dependencies
@@ -45,7 +45,7 @@ jobs:
           if [[ $result == *"daka success"* ]]; then
             echo "Daka Success"
             echo "result=success" >> $GITHUB_OUTPUT
-          elif [[ $result == *"not daka"* ]]; then
+          elif [[ $result == *"no daka"* ]]; then
             echo "No Daka"
             echo "result=no need" >> $GITHUB_OUTPUT
           else
