@@ -60,7 +60,7 @@ jobs:
           fi
 
       - name: Create issue from file
-        uses: peter-evans/create-issue-from-file@v4
+        uses: peter-evans/create-issue-from-file@v5
         with:
           title: Daka ${{ steps.daka.outputs.result }} ${{ steps.daka.outputs.clock_type }}
           content-filepath: ./result.md
