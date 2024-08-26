@@ -4,7 +4,7 @@ Check the holidays and your personal events, then daka!!
 
 ## Usage
 
-Use `Crontab`, `GitHub Actions`, or `Docker` one of thtem to run the schedule.
+Use `Crontab`, `GitHub Actions`, or `Docker` one of them to run the schedule.
 
 ### Crontab
 
