@@ -37,34 +37,49 @@ jobs:
         if: github.event.schedule == '0 11 * * *'
         run: node src/index.js E > result.md
 
-      - name: Get the Daka meta
+      - name: Process Daka Result
         id: daka
-        run: |
-          result=`cat ./result.md`
-
-          if [[ $result == *"daka success"* ]]; then
-            echo "Daka Success"
-            echo "result=success" >> $GITHUB_OUTPUT
-          elif [[ $result == *"no daka"* ]]; then
-            echo "No Daka"
-            echo "result=no need" >> $GITHUB_OUTPUT
-          else
-            echo "Daka Failed"
-            echo "result=failed" >> $GITHUB_OUTPUT
-          fi
-
-          if [[ $result == *"gogo"* ]]; then
-            echo "clock_type=gogo" >> $GITHUB_OUTPUT
-          elif [[ $result == *"bye"* ]]; then
-            echo "clock_type=bye" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Create issue from file
-        id: create-issue
-        uses: peter-evans/create-issue-from-file@v5
+        uses: actions/github-script@v7
         with:
-          title: Daka ${{ steps.daka.outputs.result }} ${{ steps.daka.outputs.clock_type }}
-          content-filepath: ./result.md
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          result-encoding: string
+          script: |
+            const fs = require('fs').promises;
+
+            // Read the result file using promise-based fs
+            const result = await fs.readFile('./result.md', 'utf8');
+
+            // Determine result status
+            let resultStatus = 'failed';
+            if (result.includes('daka success')) {
+              console.log('Daka Success');
+              resultStatus = 'success';
+            } else if (result.includes('no daka')) {
+              console.log('No Daka');
+              resultStatus = 'no need';
+            } else {
+              console.log('Daka Failed');
+            }
+
+            // Determine clock type
+            let clockType = '';
+            if (result.includes('gogo')) {
+              clockType = 'gogo';
+            } else if (result.includes('bye')) {
+              clockType = 'bye';
+            }
+
+            // Create the issue
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Daka ${resultStatus} ${clockType}`,
+              body: result
+            });
+
+            console.log(`Created issue #${issue.data.number}`);
+
+            return issue.data.number;
 
       - name: Close issue
         uses: actions/github-script@v7
@@ -74,6 +89,6 @@ jobs:
             github.rest.issues.update({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: ${{ steps.create-issue.outputs.issue-number }},
+              issue_number: ${{ steps.daka.outputs.result }},
               state: 'closed'
             })
