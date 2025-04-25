@@ -68,7 +68,7 @@ crontab -e
 
 > **Note**: [GitHub Actions scheduled events](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule) may experience slight delays.
 
-Create a workflow file at `.github/workflows/daka.yml`:
+Update the schedule of workflow file at `.github/workflows/daka.yml`:
 
 ```yaml
 name: Daka Attendance
