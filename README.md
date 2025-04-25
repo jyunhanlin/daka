@@ -71,7 +71,7 @@ crontab -e
 Update the schedule of workflow file at `.github/workflows/daka.yml`:
 
 ```yaml
-name: Daka Attendance
+name: Daka
 
 on:
   schedule:
