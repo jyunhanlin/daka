@@ -2,7 +2,7 @@ name: Daka
 
 on:
   schedule:
-    - cron: '50 23 * * *'
+    - cron: '0 0 * * *'
     - cron: '10 11 * * *'
 
 jobs:
@@ -34,7 +34,7 @@ jobs:
         run: node src/index.js S > result.md
 
       - name: Daka bye
-        if: github.event.schedule == '0 11 * * *'
+        if: github.event.schedule == '10 11 * * *'
         run: node src/index.js E > result.md
 
       - name: Process Daka Result
