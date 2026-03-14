@@ -3,8 +3,7 @@ use serde::Deserialize;
 
 const CURRENT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
-// TODO: Update this with the actual GitHub repo URL
-const GITHUB_RELEASE_URL: &str = "https://api.github.com/repos/user/daka/releases/latest";
+const GITHUB_RELEASE_URL: &str = "https://api.github.com/repos/jyunhanlin/daka/releases/latest";
 
 #[derive(Deserialize)]
 struct GitHubRelease {

@@ -197,7 +197,7 @@ fn open_settings_window<R: tauri::Runtime>(app: &AppHandle<R>) {
 
 fn open_update_page<R: tauri::Runtime>(app: &AppHandle<R>) {
     use tauri_plugin_shell::ShellExt;
-    let url = "https://github.com/jhlin/daka/releases/latest";
+    let url = "https://github.com/jyunhanlin/daka/releases/latest";
     // shell().open() is deprecated in favour of tauri-plugin-opener, but that
     // plugin is not yet in our dependencies. Suppress the warning until we migrate.
     #[allow(deprecated)]
