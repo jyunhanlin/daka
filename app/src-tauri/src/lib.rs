@@ -1,3 +1,4 @@
+pub mod commands;
 pub mod config;
 pub mod daka;
 pub mod modules;
@@ -14,6 +15,11 @@ pub fn run() {
                 .app_name("Daka")
                 .build(),
         )
+        .invoke_handler(tauri::generate_handler![
+            commands::get_config,
+            commands::save_config,
+            commands::get_default_config,
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

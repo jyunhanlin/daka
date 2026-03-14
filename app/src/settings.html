@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daka 設定</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>設定</h1>
+
+    <!-- 一般 -->
+    <section>
+      <h2>一般</h2>
+      <label>
+        <span>打卡模組</span>
+        <select id="module">
+          <option value="mayo">Mayo</option>
+          <option value="femas">Femas</option>
+        </select>
+      </label>
+      <label>
+        <span>最大重試次數</span>
+        <input type="number" id="max_retries" min="1" max="10" value="3">
+      </label>
+    </section>
+
+    <!-- 排程 -->
+    <section>
+      <h2>排程</h2>
+      <label>
+        <span>上班打卡時間</span>
+        <input type="time" id="punch_in" value="09:00">
+      </label>
+      <label>
+        <span>下班打卡時間</span>
+        <input type="time" id="punch_out" value="19:00">
+      </label>
+      <label>
+        <span>延遲起始（分鐘）</span>
+        <input type="number" id="delay_start_mins" min="0" max="60" value="5">
+      </label>
+      <label>
+        <span>延遲結束（分鐘）</span>
+        <input type="number" id="delay_end_mins" min="0" max="60" value="15">
+      </label>
+      <label>
+        <span>遲到容許（分鐘）</span>
+        <input type="number" id="late_tolerance_mins" min="0" max="120" value="30">
+      </label>
+    </section>
+
+    <!-- Mayo -->
+    <section id="section_mayo">
+      <h2>Mayo</h2>
+      <label>
+        <span>帳號</span>
+        <input type="text" id="mayo_username" autocomplete="username">
+      </label>
+      <label>
+        <span>密碼</span>
+        <input type="password" id="mayo_password" autocomplete="current-password">
+      </label>
+    </section>
+
+    <!-- Femas -->
+    <section id="section_femas" style="display:none">
+      <h2>Femas</h2>
+      <label>
+        <span>網域</span>
+        <input type="text" id="femas_domain" placeholder="example.com">
+      </label>
+      <label>
+        <span>帳號</span>
+        <input type="text" id="femas_username" autocomplete="username">
+      </label>
+      <label>
+        <span>密碼</span>
+        <input type="password" id="femas_password" autocomplete="current-password">
+      </label>
+    </section>
+
+    <div class="actions">
+      <button id="save_btn">儲存</button>
+      <span id="status_msg"></span>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
