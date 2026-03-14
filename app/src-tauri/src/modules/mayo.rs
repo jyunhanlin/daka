@@ -6,6 +6,7 @@ use std::collections::HashMap;
 
 use super::{HrError, HrModule, PunchResult, PunchType, Session};
 
+#[derive(Default)]
 pub struct Mayo;
 
 impl Mayo {
