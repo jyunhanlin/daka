@@ -265,8 +265,44 @@ On first launch (no `~/.config/daka/config.toml` exists):
 3. Scheduler does not start until credentials are configured and saved
 4. Validate that username/password are non-empty before allowing save
 
+## CI/CD
+
+The existing CLI CI/CD (Docker image build + push) is retained unchanged under `.github/workflows/`.
+
+### App — PR / Push to main
+
+```
+→ cargo check
+→ cargo test
+→ cargo clippy (lint)
+```
+
+Ensures the Rust backend compiles, tests pass, and there are no lint warnings.
+
+### App — Release (Push tag `v*`)
+
+```
+→ cargo test
+→ tauri build (produces .dmg)
+→ Upload .dmg to GitHub Release
+```
+
+No code signing (no Apple Developer account). Users must bypass Gatekeeper on first install (`xattr -cr Daka.app`).
+
+### In-App Update Check
+
+No Tauri auto-updater (requires code signing). Instead, a lightweight version check:
+
+1. On app startup, call GitHub API: `GET /repos/{owner}/{repo}/releases/latest`
+2. Compare `tag_name` against the app's built-in version
+3. If a newer version exists, add a tray menu item: `🔄 有新版本 v1.1.0`
+4. Clicking it opens the GitHub Release page in the default browser
+
+No update server, no signing, no additional infrastructure needed.
+
 ## Future Improvements (Not in Scope)
 
 - macOS Keychain for password storage (low migration cost via `keyring` crate)
 - Punch history / calendar view
 - Cross-platform support (Tauri supports Windows/Linux)
+- Code signing + Tauri auto-updater (requires Apple Developer Program, $99/year)
