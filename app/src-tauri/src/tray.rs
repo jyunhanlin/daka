@@ -166,42 +166,8 @@ fn spawn_manual_punch<R: tauri::Runtime>(app: AppHandle<R>, punch_type: PunchTyp
     tauri::async_runtime::spawn(async move {
         let now = chrono::Local::now().time();
         let outcome = daka.execute(punch_type, now).await;
-
-        let (title, body) = notification_message(punch_type, &outcome);
-        if let Err(e) = send_notification(&app, &title, &body) {
-            error!("Failed to send notification: {}", e);
-        }
+        crate::notification::notify_outcome(&app, punch_type, &outcome);
     });
-}
-
-fn notification_message(punch_type: PunchType, outcome: &DakaOutcome) -> (String, String) {
-    let label = punch_type.label();
-    match outcome {
-        DakaOutcome::Success(result) => (
-            format!("打卡成功 — {}", label),
-            format!("已於 {} 打卡", result.time),
-        ),
-        DakaOutcome::Holiday | DakaOutcome::PersonalEvent => {
-            ("今日休假".to_string(), "偵測到假期或個人事項，跳過打卡".to_string())
-        }
-        DakaOutcome::Failed(reason) => {
-            (format!("打卡失敗 — {}", label), reason.clone())
-        }
-    }
-}
-
-fn send_notification<R: tauri::Runtime>(
-    app: &AppHandle<R>,
-    title: &str,
-    body: &str,
-) -> Result<(), Box<dyn std::error::Error>> {
-    use tauri_plugin_notification::NotificationExt;
-    app.notification()
-        .builder()
-        .title(title)
-        .body(body)
-        .show()?;
-    Ok(())
 }
 
 fn open_settings_window<R: tauri::Runtime>(app: &AppHandle<R>) {

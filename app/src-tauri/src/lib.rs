@@ -1,6 +1,7 @@
 pub mod config;
 pub mod daka;
 pub mod modules;
+pub mod notification;
 pub mod scheduler;
 pub mod tray;
 
