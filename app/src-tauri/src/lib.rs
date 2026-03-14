@@ -14,18 +14,6 @@ use std::sync::{Arc, Mutex};
 use tauri::Manager;
 use tray::TrayState;
 
-/// Hide the app from Dock and Cmd+Tab — menu bar only.
-#[cfg(target_os = "macos")]
-fn set_macos_accessory_mode() {
-    use cocoa::appkit::{NSApp, NSApplication, NSApplicationActivationPolicy};
-    unsafe {
-        let app = NSApp();
-        app.setActivationPolicy_(
-            NSApplicationActivationPolicy::NSApplicationActivationPolicyAccessory,
-        );
-    }
-}
-
 pub fn run() {
     env_logger::init();
 
@@ -46,10 +34,6 @@ pub fn run() {
             commands::get_default_config,
         ])
         .setup(move |app| {
-            // Hide from Dock — must be called after Tauri initializes NSApplication
-            #[cfg(target_os = "macos")]
-            set_macos_accessory_mode();
-
             let handle = app.handle().clone();
 
             // Shared tray state
