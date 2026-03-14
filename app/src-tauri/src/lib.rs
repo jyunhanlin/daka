@@ -5,6 +5,7 @@ pub mod modules;
 pub mod notification;
 pub mod scheduler;
 pub mod tray;
+pub mod update_checker;
 
 use config::AppConfig;
 use daka::DakaService;
@@ -38,6 +39,23 @@ pub fn run() {
             // Shared tray state
             let tray_state = Arc::new(Mutex::new(TrayState::default()));
             let _tray = tray::build_tray(&handle, &tray_state.lock().unwrap())?;
+
+            // Check for updates
+            let handle_for_update = handle.clone();
+            let tray_state_for_update = tray_state.clone();
+            tauri::async_runtime::spawn(async move {
+                if let Some(update) = update_checker::check_for_update().await {
+                    log::info!("Update available: {}", update.version);
+                    if let Ok(mut state) = tray_state_for_update.lock() {
+                        state.update_available = Some(update.version);
+                    }
+                    if let Some(tray_icon) = handle_for_update.tray_by_id("daka") {
+                        if let Ok(state) = tray_state_for_update.lock() {
+                            let _ = tray::rebuild_tray_menu(&handle_for_update, &tray_icon, &state);
+                        }
+                    }
+                }
+            });
 
             // Open settings on first run
             if is_first_run {
