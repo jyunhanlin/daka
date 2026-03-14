@@ -2,6 +2,7 @@ pub mod config;
 pub mod daka;
 pub mod modules;
 pub mod scheduler;
+pub mod tray;
 
 pub fn run() {
     tauri::Builder::default()
