@@ -190,16 +190,14 @@ On failure at ANY step (1-4):
 
 This matches the existing CLI behavior where the entire login-through-punch flow is retried, not just the punch step.
 
-### Personal Event Logic (60-Minute Proximity Rule)
+### Personal Event Logic
 
 When checking personal events (leave/vacation), an event blocks the punch if:
 
 - The event covers 9+ hours → treated as all-day leave, always skip
-- The current time falls between the event's start and end
-- **Punch-in (S)**: the event starts within 60 minutes of the current time
-- **Punch-out (E)**: the event ended within 60 minutes of the current time
+- The scheduled punch time (including delay) falls within the event's start ~ end range → skip
 
-This proximity rule prevents punching in right before a leave starts, or punching out right after a leave ends.
+The existing CLI code has a 60-minute proximity buffer to compensate for GitHub Actions cron imprecision. This is no longer needed — the desktop app's scheduler is precise, so a simple time-range check is sufficient.
 
 ### Mayo Location
 
