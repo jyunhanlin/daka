@@ -158,6 +158,36 @@ fn event_covers_punch(
     false
 }
 
+// ── Private helpers ──────────────────────────────────────────────────────────
+
+impl Mayo {
+    /// Fetch the calendar for the given date's month. Both `is_holiday` and
+    /// `has_personal_event` need the same data, so callers can reuse the result.
+    async fn fetch_calendar_day(
+        session: &Session,
+        date: NaiveDate,
+    ) -> Result<CalendarDay, HrError> {
+        let url = format!(
+            "https://apolloxe.mayohr.com/backend/pt/api/EmployeeCalendars/scheduling/V2?year={}&month={}",
+            date.year(),
+            date.month()
+        );
+
+        let resp: CalendarResponse = session.client.get(&url).send().await?.json().await?;
+
+        let calendars = resp
+            .data
+            .calendars
+            .ok_or_else(|| HrError::CalendarFailed("no Calendars array".into()))?;
+
+        let day_index = (date.day() as usize).saturating_sub(1);
+        calendars
+            .into_iter()
+            .nth(day_index)
+            .ok_or_else(|| HrError::CalendarFailed("day index out of range".into()))
+    }
+}
+
 // ── HrModule impl ─────────────────────────────────────────────────────────────
 
 #[async_trait]
@@ -227,24 +257,7 @@ impl HrModule for Mayo {
     }
 
     async fn is_holiday(&self, session: &Session, date: NaiveDate) -> Result<bool, HrError> {
-        let url = format!(
-            "https://apolloxe.mayohr.com/backend/pt/api/EmployeeCalendars/scheduling/V2?year={}&month={}",
-            date.year(),
-            date.month()
-        );
-
-        let resp: CalendarResponse = session.client.get(&url).send().await?.json().await?;
-
-        let calendars = resp
-            .data
-            .calendars
-            .ok_or_else(|| HrError::CalendarFailed("no Calendars array".into()))?;
-
-        let day_index = (date.day() as usize).saturating_sub(1);
-        let day = calendars
-            .get(day_index)
-            .ok_or_else(|| HrError::CalendarFailed("day index out of range".into()))?;
-
+        let day = Self::fetch_calendar_day(session, date).await?;
         let option_id = day.item_option_id.as_deref().unwrap_or("");
         Ok(option_id == "CY00003" || option_id == "CY00004")
     }
@@ -256,29 +269,11 @@ impl HrModule for Mayo {
         punch_type: PunchType,
         punch_time: NaiveTime,
     ) -> Result<bool, HrError> {
-        let url = format!(
-            "https://apolloxe.mayohr.com/backend/pt/api/EmployeeCalendars/scheduling/V2?year={}&month={}",
-            date.year(),
-            date.month()
-        );
-
-        let resp: CalendarResponse = session.client.get(&url).send().await?.json().await?;
-
-        let calendars = resp
-            .data
-            .calendars
-            .ok_or_else(|| HrError::CalendarFailed("no Calendars array".into()))?;
-
-        let day_index = (date.day() as usize).saturating_sub(1);
-        let day = calendars
-            .get(day_index)
-            .ok_or_else(|| HrError::CalendarFailed("day index out of range".into()))?;
-
+        let day = Self::fetch_calendar_day(session, date).await?;
         let sheets = match &day.leave_sheets {
             Some(s) if !s.is_empty() => s,
             _ => return Ok(false),
         };
-
         Ok(event_covers_punch(sheets, date, punch_type, punch_time))
     }
 
@@ -318,14 +313,17 @@ impl HrModule for Mayo {
             "PunchesLocationId": location.punches_location_id,
         });
 
-        let punch_resp: PunchResponse = session
+        let punch_resp_text = session
             .client
             .post("https://pt.mayohr.com/api/checkin/punch/locate")
             .json(&body)
             .send()
             .await?
-            .json()
+            .text()
             .await?;
+
+        let punch_resp: PunchResponse = serde_json::from_str(&punch_resp_text)
+            .map_err(|e| HrError::PunchFailed(format!("failed to parse response: {e}, body: {punch_resp_text}")))?;
 
         let status_code = punch_resp
             .meta
@@ -335,8 +333,8 @@ impl HrModule for Mayo {
 
         if status_code != "200" {
             return Err(HrError::PunchFailed(format!(
-                "unexpected status code: {}",
-                status_code
+                "unexpected status code: {}, body: {}",
+                status_code, punch_resp_text
             )));
         }
 
