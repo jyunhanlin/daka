@@ -7,7 +7,7 @@ const {
   HOUR,
   MINUTE,
   checkPersonalEvents,
-} = require('../resource');
+} = require('../utils/resource');
 
 const SESSION_LIFE_TIME = Math.floor(TODAY.getTime() / 1000) + 1800; // copy from femas javascript
 
@@ -52,7 +52,9 @@ class FemasModule {
     return { ClockRecordUserId, AttRecordUserId };
   }
 
-  async login() {
+  async login({ username, password }) {
+    this.username = username;
+    this.password = password;
     let session = '';
     let ClockRecordUserId = '';
     let AttRecordUserId = '';
@@ -78,11 +80,11 @@ class FemasModule {
 
     for (let i = 0; i < sessions.length; i += 1) {
       try {
-        const response = await _login({
+        const response = await this._login({
           session: sessions[i],
           domain: this.domain,
-          username,
-          password,
+          username: this.username,
+          password: this.password,
         });
 
         if (response.ClockRecordUserId && response.AttRecordUserId) {
@@ -115,7 +117,7 @@ class FemasModule {
     });
   }
 
-  async checkDakaDay() {
+  async checkDakaDay({ punchType }) {
     const startDayOfMonth = format(getCSTDate(startOfMonth(TODAY)));
     const lastDayOfMonth = format(getCSTDate(endOfMonth(TODAY)));
 
@@ -220,8 +222,6 @@ class FemasModule {
 
     console.log(`daka success, time: ${dakaTime}`);
   }
-
-  punch() {}
 }
 
 module.exports = FemasModule;
