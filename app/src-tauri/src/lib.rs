@@ -29,9 +29,6 @@ fn set_macos_accessory_mode() {
 pub fn run() {
     env_logger::init();
 
-    #[cfg(target_os = "macos")]
-    set_macos_accessory_mode();
-
     let config = AppConfig::load_or_create_default();
     let is_first_run = !config.is_configured();
 
@@ -49,6 +46,10 @@ pub fn run() {
             commands::get_default_config,
         ])
         .setup(move |app| {
+            // Hide from Dock — must be called after Tauri initializes NSApplication
+            #[cfg(target_os = "macos")]
+            set_macos_accessory_mode();
+
             let handle = app.handle().clone();
 
             // Shared tray state
