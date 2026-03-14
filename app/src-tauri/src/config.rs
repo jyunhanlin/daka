@@ -60,7 +60,7 @@ impl Default for AppConfig {
                 max_retries: 3,
             },
             schedule: ScheduleConfig {
-                punch_in: "09:00".to_string(),
+                punch_in: "10:00".to_string(),
                 punch_out: "19:00".to_string(),
                 delay_start_mins: 5,
                 delay_end_mins: 15,
