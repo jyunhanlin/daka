@@ -14,8 +14,23 @@ use std::sync::{Arc, Mutex};
 use tauri::Manager;
 use tray::TrayState;
 
+/// Hide the app from Dock and Cmd+Tab — menu bar only.
+#[cfg(target_os = "macos")]
+fn set_macos_accessory_mode() {
+    use cocoa::appkit::{NSApp, NSApplication, NSApplicationActivationPolicy};
+    unsafe {
+        let app = NSApp();
+        app.setActivationPolicy_(
+            NSApplicationActivationPolicy::NSApplicationActivationPolicyAccessory,
+        );
+    }
+}
+
 pub fn run() {
     env_logger::init();
+
+    #[cfg(target_os = "macos")]
+    set_macos_accessory_mode();
 
     let config = AppConfig::load_or_create_default();
     let is_first_run = !config.is_configured();
