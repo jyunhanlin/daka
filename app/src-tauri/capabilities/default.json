@@ -1,0 +1,10 @@
+{
+  "identifier": "default",
+  "windows": ["*"],
+  "permissions": [
+    "core:default",
+    "notification:default",
+    "shell:allow-open",
+    "autostart:default"
+  ]
+}
