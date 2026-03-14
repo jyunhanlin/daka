@@ -100,7 +100,7 @@ fn parse_datetime(s: &str) -> Option<NaiveDateTime> {
 fn event_covers_punch(
     sheets: &[LeaveSheet],
     date: NaiveDate,
-    punch_type: PunchType,
+    _punch_type: PunchType,
     punch_time: NaiveTime,
 ) -> bool {
     for sheet in sheets {
@@ -145,28 +145,12 @@ fn event_covers_punch(
             return true;
         }
 
-        // Punch time directly inside the event window.
+        // Punch time falls within the event window → skip.
+        // The 60-minute proximity buffer from the CLI version is intentionally
+        // dropped — the desktop app's scheduler is precise, so a simple
+        // time-range check is sufficient.
         if punch_time >= day_start_time && punch_time <= day_end_time {
             return true;
-        }
-
-        // Within 60 minutes before event start (punch-in) or after event end
-        // (punch-out) — matches the JS timeDiff <= 60 logic.
-        match punch_type {
-            PunchType::In => {
-                let diff_mins = (day_start_time.hour() as i32 - punch_time.hour() as i32) * 60
-                    + (day_start_time.minute() as i32 - punch_time.minute() as i32);
-                if diff_mins <= 60 {
-                    return true;
-                }
-            }
-            PunchType::Out => {
-                let diff_mins = (punch_time.hour() as i32 - day_end_time.hour() as i32) * 60
-                    + (punch_time.minute() as i32 - day_end_time.minute() as i32);
-                if diff_mins <= 60 {
-                    return true;
-                }
-            }
         }
     }
 
