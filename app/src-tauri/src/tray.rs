@@ -135,6 +135,9 @@ pub fn build_tray<R: tauri::Runtime>(
     let menu = build_menu(app, state)?;
 
     TrayIconBuilder::with_id("daka")
+        .icon(tauri::image::Image::from_bytes(include_bytes!("../icons/tray-icon.png"))
+            .expect("failed to load tray icon"))
+        .icon_as_template(true)
         .tooltip("Daka — 自動打卡")
         .menu(&menu)
         .on_menu_event(handle_menu_event)
