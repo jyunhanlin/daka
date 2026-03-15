@@ -63,8 +63,13 @@ pub fn build_menu<R: tauri::Runtime>(
     app: &AppHandle<R>,
     state: &TrayState,
 ) -> tauri::Result<Menu<R>> {
-    let punch_in_item =
-        MenuItem::with_id(app, "punch_in_status", &state.punch_in_status, false, None::<&str>)?;
+    let punch_in_item = MenuItem::with_id(
+        app,
+        "punch_in_status",
+        &state.punch_in_status,
+        false,
+        None::<&str>,
+    )?;
     let punch_out_item = MenuItem::with_id(
         app,
         "punch_out_status",
@@ -135,8 +140,10 @@ pub fn build_tray<R: tauri::Runtime>(
     let menu = build_menu(app, state)?;
 
     TrayIconBuilder::with_id("daka")
-        .icon(tauri::image::Image::from_bytes(include_bytes!("../icons/tray-icon.png"))
-            .expect("failed to load tray icon"))
+        .icon(
+            tauri::image::Image::from_bytes(include_bytes!("../icons/tray-icon.png"))
+                .expect("failed to load tray icon"),
+        )
         .icon_as_template(true)
         .tooltip("Daka — 自動打卡")
         .menu(&menu)

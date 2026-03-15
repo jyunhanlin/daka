@@ -9,7 +9,7 @@ pub mod update_checker;
 
 use config::AppConfig;
 use daka::DakaService;
-use modules::{mayo::Mayo, femas::Femas, HrModule};
+use modules::{femas::Femas, mayo::Mayo, HrModule};
 use std::sync::{Arc, Mutex};
 use tauri::Manager;
 use tray::TrayState;

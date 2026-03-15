@@ -28,7 +28,11 @@ pub fn calculate_punch_time(base_time: NaiveTime, delay_mins: u32) -> NaiveTime 
 }
 
 /// Determine if a scheduled time should still execute relative to `now`.
-pub fn should_execute(scheduled_time: NaiveTime, now: NaiveTime, tolerance_mins: u32) -> ShouldExecute {
+pub fn should_execute(
+    scheduled_time: NaiveTime,
+    now: NaiveTime,
+    tolerance_mins: u32,
+) -> ShouldExecute {
     if now < scheduled_time {
         return ShouldExecute::Wait;
     }
@@ -88,7 +92,10 @@ impl DailySchedule {
             punch_in_time, base_in, in_delay, punch_out_time, base_out, out_delay
         );
 
-        Self { punch_in_time, punch_out_time }
+        Self {
+            punch_in_time,
+            punch_out_time,
+        }
     }
 }
 
@@ -173,7 +180,10 @@ async fn handle_punch(
                     scheduled_time
                 );
                 let outcome = daka_service.execute(punch_type, scheduled_time).await;
-                let _ = tx.send(ScheduleEvent { punch_type, outcome });
+                let _ = tx.send(ScheduleEvent {
+                    punch_type,
+                    outcome,
+                });
                 break;
             }
             ShouldExecute::Skip => {
@@ -247,10 +257,7 @@ mod tests {
     #[test]
     fn test_should_execute_skip_past_tolerance() {
         // now (09:45) > scheduled (09:00) + 30 min tolerance → Skip
-        assert_eq!(
-            should_execute(t(9, 0), t(9, 45), 30),
-            ShouldExecute::Skip
-        );
+        assert_eq!(should_execute(t(9, 0), t(9, 45), 30), ShouldExecute::Skip);
     }
 
     #[test]

@@ -20,8 +20,18 @@ pub enum DakaOutcome {
 }
 
 impl DakaService {
-    pub fn new(module: Arc<dyn HrModule>, username: String, password: String, max_retries: u32) -> Self {
-        Self { module, username, password, max_retries }
+    pub fn new(
+        module: Arc<dyn HrModule>,
+        username: String,
+        password: String,
+        max_retries: u32,
+    ) -> Self {
+        Self {
+            module,
+            username,
+            password,
+            max_retries,
+        }
     }
 
     pub async fn execute(&self, punch_type: PunchType, punch_time: NaiveTime) -> DakaOutcome {
@@ -54,7 +64,9 @@ impl DakaService {
     ) -> Result<DakaOutcome, HrError> {
         let session = self.module.login(&self.username, &self.password).await?;
 
-        let result = self.do_checks_and_punch(&session, today, punch_type, punch_time).await;
+        let result = self
+            .do_checks_and_punch(&session, today, punch_type, punch_time)
+            .await;
 
         // Always logout, even on error (matches existing CLI behavior)
         if let Err(e) = self.module.logout(&session).await {
@@ -78,7 +90,11 @@ impl DakaService {
         }
 
         // Check personal events
-        if self.module.has_personal_event(session, today, punch_type, punch_time).await? {
+        if self
+            .module
+            .has_personal_event(session, today, punch_type, punch_time)
+            .await?
+        {
             info!("Personal event found, skipping punch");
             return Ok(DakaOutcome::PersonalEvent);
         }

@@ -29,7 +29,10 @@ pub async fn check_for_update() -> Option<UpdateInfo> {
     let remote_version = release.tag_name.trim_start_matches('v');
 
     if is_newer(remote_version, CURRENT_VERSION) {
-        info!("Update available: {} -> {}", CURRENT_VERSION, remote_version);
+        info!(
+            "Update available: {} -> {}",
+            CURRENT_VERSION, remote_version
+        );
         Some(UpdateInfo {
             version: release.tag_name,
             url: release.html_url,
@@ -41,9 +44,7 @@ pub async fn check_for_update() -> Option<UpdateInfo> {
 }
 
 fn is_newer(remote: &str, current: &str) -> bool {
-    let parse = |v: &str| -> Vec<u32> {
-        v.split('.').filter_map(|s| s.parse().ok()).collect()
-    };
+    let parse = |v: &str| -> Vec<u32> { v.split('.').filter_map(|s| s.parse().ok()).collect() };
     let remote_parts = parse(remote);
     let current_parts = parse(current);
     remote_parts > current_parts

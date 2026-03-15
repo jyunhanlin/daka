@@ -119,8 +119,7 @@ impl AppConfig {
         let path = Self::config_path();
         let dir = Self::config_dir();
 
-        std::fs::create_dir_all(&dir)
-            .map_err(|e| ConfigError::WriteError(dir.clone(), e))?;
+        std::fs::create_dir_all(&dir).map_err(|e| ConfigError::WriteError(dir.clone(), e))?;
 
         let contents = toml::to_string_pretty(self).map_err(ConfigError::SerializeError)?;
 
@@ -183,7 +182,8 @@ password = "testpass"
     fn test_default_config_generates_valid_toml() {
         let config = AppConfig::default();
         let toml_str = toml::to_string_pretty(&config).expect("Failed to serialize default config");
-        let parsed: AppConfig = toml::from_str(&toml_str).expect("Failed to parse serialized config");
+        let parsed: AppConfig =
+            toml::from_str(&toml_str).expect("Failed to parse serialized config");
         assert_eq!(config, parsed);
     }
 

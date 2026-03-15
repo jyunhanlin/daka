@@ -1,5 +1,5 @@
-pub mod mayo;
 pub mod femas;
+pub mod mayo;
 
 use async_trait::async_trait;
 use chrono::NaiveDate;
@@ -58,6 +58,7 @@ pub trait HrModule: Send + Sync {
         punch_type: PunchType,
         punch_time: chrono::NaiveTime,
     ) -> Result<bool, HrError>;
-    async fn punch(&self, session: &Session, punch_type: PunchType) -> Result<PunchResult, HrError>;
+    async fn punch(&self, session: &Session, punch_type: PunchType)
+        -> Result<PunchResult, HrError>;
     async fn logout(&self, session: &Session) -> Result<(), HrError>;
 }

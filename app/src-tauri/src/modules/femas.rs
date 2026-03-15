@@ -66,11 +66,7 @@ fn parse_datetime(s: &str) -> Option<NaiveDateTime> {
 /// Rules (matching the JS checkPersonalEvents logic, minus the 60-min buffer):
 /// - All-day event (≥9 hours): always skip.
 /// - Punch time falls within the event's [start, end] window: skip.
-fn event_covers_punch(
-    events: &[PersonalEvent],
-    date: NaiveDate,
-    punch_time: NaiveTime,
-) -> bool {
+fn event_covers_punch(events: &[PersonalEvent], date: NaiveDate, punch_time: NaiveTime) -> bool {
     for event in events {
         let start_dt = match parse_datetime(&event.start_date_time) {
             Some(dt) => dt,
@@ -132,10 +128,7 @@ impl HrModule for Femas {
             .map_err(HrError::NetworkError)?;
 
         // Step 1 — GET home page to acquire the session cookie.
-        client
-            .get(format!("{}/", self.base_url()))
-            .send()
-            .await?;
+        client.get(format!("{}/", self.base_url())).send().await?;
 
         // Step 2 — POST login credentials.
         let login_url = format!("{}/Accounts/login", self.base_url());

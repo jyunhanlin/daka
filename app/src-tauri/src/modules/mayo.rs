@@ -140,8 +140,7 @@ fn event_covers_punch(
         }
 
         // All-day: hour difference ≥ 9 → skip punch.
-        let duration_hours =
-            (day_end_time.hour() as i32) - (day_start_time.hour() as i32);
+        let duration_hours = (day_end_time.hour() as i32) - (day_start_time.hour() as i32);
         if duration_hours >= 9 {
             return true;
         }
@@ -322,8 +321,11 @@ impl HrModule for Mayo {
             .text()
             .await?;
 
-        let punch_resp: PunchResponse = serde_json::from_str(&punch_resp_text)
-            .map_err(|e| HrError::PunchFailed(format!("failed to parse response: {e}, body: {punch_resp_text}")))?;
+        let punch_resp: PunchResponse = serde_json::from_str(&punch_resp_text).map_err(|e| {
+            HrError::PunchFailed(format!(
+                "failed to parse response: {e}, body: {punch_resp_text}"
+            ))
+        })?;
 
         let status_code = punch_resp
             .meta
