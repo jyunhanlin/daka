@@ -31,16 +31,11 @@ jobs:
         working-directory: ./app
         run: npm install
 
-      - name: Install Tauri CLI
-        run: cargo install tauri-cli --version "^2.0.0"
-
-      - name: Build Tauri app
-        working-directory: ./app
-        run: cargo tauri build
-
-      - name: Upload to GitHub Release
-        uses: softprops/action-gh-release@v2
+      - name: Build and Release
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: |
-            app/src-tauri/target/release/bundle/dmg/*.dmg
-            app/src-tauri/target/release/bundle/macos/*.app.tar.gz
+          projectPath: ./app
+          tagName: ${{ github.ref_name }}
+          releaseName: ${{ github.ref_name }}
