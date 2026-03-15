@@ -14,6 +14,7 @@
     "active": true,
     "targets": "all",
     "icon": [
+      "icons/icon.icns",
       "icons/icon.png"
     ],
     "macOS": {
