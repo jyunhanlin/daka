@@ -146,3 +146,6 @@ dist
 ### Rust / Tauri ###
 target/
 app/src-tauri/gen/
+
+### macOS ###
+.DS_Store
