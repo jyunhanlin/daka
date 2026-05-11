@@ -2,8 +2,8 @@ name: Docker image
 
 on:
   push:
-    branches:
-      - 'main'
+    branches: ['main']
+    paths: ['cli/**']
 
 jobs:
   testing:
