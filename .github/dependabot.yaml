@@ -1,13 +1,39 @@
 version: 2
 updates:
-  # Maintain dependencies for GitHub Actions
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
       interval: 'weekly'
+    groups:
+      github-actions:
+        patterns:
+          - '*'
 
-  # Maintain dependencies for npm
   - package-ecosystem: 'npm'
-    directory: '/'
+    directory: '/app'
     schedule:
       interval: 'weekly'
+    groups:
+      app-dev-dependencies:
+        dependency-type: 'development'
+      app-production-dependencies:
+        dependency-type: 'production'
+
+  - package-ecosystem: 'npm'
+    directory: '/cli'
+    schedule:
+      interval: 'weekly'
+    groups:
+      cli-dev-dependencies:
+        dependency-type: 'development'
+      cli-production-dependencies:
+        dependency-type: 'production'
+
+  - package-ecosystem: 'cargo'
+    directory: '/app/src-tauri'
+    schedule:
+      interval: 'weekly'
+    groups:
+      cargo-dependencies:
+        patterns:
+          - '*'
