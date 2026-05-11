@@ -37,3 +37,6 @@ updates:
       cargo-dependencies:
         patterns:
           - '*'
+        update-types:
+          - 'minor'
+          - 'patch'
