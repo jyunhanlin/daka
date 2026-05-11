@@ -43,7 +43,7 @@ jobs:
 
       - name: Process Daka Result
         id: daka
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           result-encoding: string
@@ -86,7 +86,7 @@ jobs:
             return issue.data.number;
 
       - name: Close issue
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
