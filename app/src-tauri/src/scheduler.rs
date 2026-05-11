@@ -19,7 +19,7 @@ pub fn random_delay_mins(min_mins: u32, max_mins: u32) -> u32 {
     if min_mins >= max_mins {
         return min_mins;
     }
-    rand::thread_rng().gen_range(min_mins..=max_mins)
+    rand::rng().random_range(min_mins..=max_mins)
 }
 
 /// Calculate the actual punch time = base_time + delay_mins.
